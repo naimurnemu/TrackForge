@@ -1,9 +1,15 @@
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
+// admin.ts or server-side Firebase
+import {
+  initializeApp as initializeAdminApp,
+  getApps,
+  cert,
+} from "firebase-admin/app";
+import { getAuth as getAdminAuth } from "firebase-admin/auth";
+import { getFirestore as getAdminFirestore } from "firebase-admin/firestore";
 
-const app =
+const adminApp =
   getApps().length === 0
-    ? initializeApp({
+    ? initializeAdminApp({
         credential: cert({
           projectId: process.env.FIREBASE_PROJECT_ID,
           clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
@@ -12,4 +18,5 @@ const app =
       })
     : getApps()[0];
 
-export const adminAuth = getAuth(app);
+export const adminAuth = getAdminAuth(adminApp);
+export const adminDb = getAdminFirestore(adminApp); 

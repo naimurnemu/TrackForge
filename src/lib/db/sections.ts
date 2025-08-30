@@ -1,54 +1,37 @@
-import { db } from "@/lib/firebase";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  where,
-  doc,
-  getDoc,
-  updateDoc,
-  serverTimestamp,
-  deleteDoc,
-} from "firebase/firestore";
 import { Section } from "@/types";
-
-const sectionsCol = collection(db, "sections");
+import { sectionsCol } from "./collections";
 
 export async function createSection(
   data: Omit<Section, "id" | "createdAt" | "updatedAt">
 ) {
-  const docRef = await addDoc(sectionsCol, {
+  const docRef = await sectionsCol.add({
     ...data,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
+
   return docRef.id;
 }
 
 export async function getUserSections(userId: string) {
-  const q = query(sectionsCol, where("userId", "==", userId));
-  const snap = await getDocs(q);
+  const snap = await sectionsCol.where("userId", "==", userId).get();
   return snap.docs.map((doc) => ({ ...(doc.data() as Section), id: doc.id }));
 }
 
 export async function getSectionById(sectionId: string) {
-  const ref = doc(db, "sections", sectionId);
-  const snap = await getDoc(ref);
-  return snap.exists() ? { ...(snap.data() as Section), id: snap.id } : null;
+  const docRef = await sectionsCol.doc(sectionId).get();
+  return docRef.exists ? { ...(docRef.data() as Section), id: docRef.id } : null;
 }
 
 export async function updateSection(sectionId: string, updates: Partial<Section>) {
-  const ref = doc(db, "sections", sectionId);
-  await updateDoc(ref, {
+  await sectionsCol.doc(sectionId).update({
     ...updates,
-    updatedAt: serverTimestamp(),
+    updatedAt: new Date(),
   });
   return true;
 }
 
 export async function deleteSection(sectionId: string) {
-  const ref = doc(db, "sections", sectionId);
-  await deleteDoc(ref);
+  await sectionsCol.doc(sectionId).delete();
   return true;
 }

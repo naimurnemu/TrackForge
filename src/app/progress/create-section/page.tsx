@@ -15,8 +15,9 @@ export default function CreateSectionPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const user = useAuth();
-  const userId = user?.user?.uid || "";
+  const { user } = useAuth();
+  const userId = user?.uid || "";
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,21 +30,13 @@ export default function CreateSectionPage() {
     const target = formData.get("target") as string;
 
     try {
-      const res = createSectionAPI({ title, description, target, userId });
-      
 
-      const data = res;
+      console.log("Creating section... client-side");
+      const data = await createSectionAPI({ title, description, target, userId });
 
-      // if (!res.ok) {
-      //   throw new Error(data. || "Failed to create section");
-      // }
-
-      if(data?.sectionId){
+      if (data?.data?.sectionId) {
         router.push("/progress");
       }
-
-      // Navigate without full reload
-      // router.refresh(); // Optional: refresh to ensure updated data
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {

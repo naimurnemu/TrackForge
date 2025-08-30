@@ -1,78 +1,37 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
+// src/app/progress/[sectionId]/phase/[phaseId]/topic/create/page.tsx
+"use client";
+
 import { useState } from "react";
+import { createTopic } from "@/lib/db";
+import { useRouter } from "next/navigation";
 
-export default function CreateTopicPage({
-  params,
-}: {
-  params: { sectionId: string; phaseId: string };
-}) {
-  const { sectionId, phaseId } = params;
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export default function CreateTopicPage({ params }: { params: { sectionId: string; phaseId: string } }) {
+  const router = useRouter();
+  const [title, setTitle] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const formData = new FormData(e.currentTarget);
-    const title = formData.get("title") as string;
-
-    try {
-      const res = await fetch("/api/progress/create-topic", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phaseId, title }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to create topic");
-      }
-
-      window.location.href = `/progress/${sectionId}/phase/${phaseId}`;
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    await createTopic(params.phaseId, { title });
+    router.push(`/progress/${params.sectionId}/phase/${params.phaseId}`);
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-6">Add New Topic</h1>
-
-      {error && (
-        <div className="mb-6 p-4 text-sm bg-destructive/15 text-destructive rounded-md">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <input type="hidden" name="phaseId" value={phaseId} />
-
-        <div className="space-y-2">
-          <Label htmlFor="title">Topic Title *</Label>
-          <Input
-            id="title"
-            name="title"
-            placeholder="e.g., Components and Props"
-            required
-          />
-        </div>
-
-        <div className="flex gap-4">
-          <Button type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create Topic"}
-          </Button>
-          <Button asChild variant="outline">
-            <Link href={`/progress/${sectionId}/phase/${phaseId}`}>Cancel</Link>
-          </Button>
-        </div>
+    <div className="max-w-md mx-auto mt-10">
+      <h1 className="text-xl font-bold mb-4">Create Topic</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          placeholder="Topic title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full border rounded px-3 py-2"
+        />
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Create
+        </button>
       </form>
     </div>
   );
