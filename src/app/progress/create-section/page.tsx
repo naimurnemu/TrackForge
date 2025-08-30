@@ -1,13 +1,22 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { createSectionAPI } from "@/lib/server/progress";
+import { useAuth } from "@/context/AuthContext";
 
 export default function CreateSectionPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const user = useAuth();
+  const userId = user?.user?.uid || "";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,22 +29,23 @@ export default function CreateSectionPage() {
     const target = formData.get("target") as string;
 
     try {
-      const res = await fetch("/api/progress/create-section", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, target }),
-      });
+      const res = createSectionAPI({ title, description, target, userId });
+      
 
-      const data = await res.json();
+      const data = res;
 
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to create section");
+      // if (!res.ok) {
+      //   throw new Error(data. || "Failed to create section");
+      // }
+
+      if(data?.sectionId){
+        router.push("/progress");
       }
 
-      // Redirect to progress dashboard
-      window.location.href = "/progress";
-    } catch (error) {
-      setError(error.message);
+      // Navigate without full reload
+      // router.refresh(); // Optional: refresh to ensure updated data
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
       setLoading(false);
     }
@@ -43,53 +53,66 @@ export default function CreateSectionPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-6">Create New Section</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Create New Section</CardTitle>
+          <CardDescription>
+            Add a new learning section to track your progress.
+          </CardDescription>
+        </CardHeader>
 
-      {error && (
-        <div className="mb-6 p-4 text-sm bg-destructive/15 text-destructive rounded-md">
-          {error}
-        </div>
-      )}
+        <CardContent>
+          {error && (
+            <div className="mb-6 p-4 text-sm bg-destructive/15 text-destructive rounded-md">
+              {error}
+            </div>
+          )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="title">Section Title *</Label>
-          <Input
-            id="title"
-            name="title"
-            placeholder="e.g., Web Development"
-            required
-          />
-        </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Title Field */}
+            <div className="space-y-2">
+              <Label htmlFor="title">Section Title *</Label>
+              <Input
+                id="title"
+                name="title"
+                placeholder="e.g., Web Development"
+                required
+              />
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            name="description"
-            placeholder="Explain what this section is about..."
-            rows={4}
-          />
-        </div>
+            {/* Description Field */}
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Explain what this section is about..."
+                rows={4}
+              />
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="target">Target</Label>
-          <Input
-            id="target"
-            name="target"
-            placeholder="e.g., Complete 3 projects in 3 months"
-          />
-        </div>
+            {/* Target Field */}
+            <div className="space-y-2">
+              <Label htmlFor="target">Target</Label>
+              <Input
+                id="target"
+                name="target"
+                placeholder="e.g., Complete 3 projects in 3 months"
+              />
+            </div>
 
-        <div className="flex gap-4">
-          <Button type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create Section"}
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/progress">Cancel</Link>
-          </Button>
-        </div>
-      </form>
+            {/* Actions */}
+            <div className="flex gap-4">
+              <Button type="submit" disabled={loading}>
+                {loading ? "Creating..." : "Create Section"}
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/progress">Cancel</Link>
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

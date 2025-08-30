@@ -17,7 +17,7 @@ Stay motivated with a daily quote + progress graph.
 ---
 
 ## 🛠 Tech Stack
-- Next.js 13+ (App Router) + Tailwind + Shadcn UI  
+- Next.js 15 (App Router) + Tailwind + Shadcn UI  
 - Firebase Auth + Firestore  
 - React Context API (auth state)  
 - Next.js API routes (server logic)  

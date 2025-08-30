@@ -6,7 +6,6 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 
-// ✅ Load fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -17,7 +16,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ✅ Metadata
 export const metadata: Metadata = {
   title: "Track Forge",
   description: "Make your daily progress easy to track",
@@ -28,6 +26,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  // console.log("Rendering RootLayout", children);
   return (
     <html lang="en" suppressHydrationWarning>
       <body

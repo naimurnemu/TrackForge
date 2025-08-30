@@ -3,21 +3,21 @@
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "@/lib/navigate"; // Lightweight wrapper for client-side nav
+// import { useNavigate } from "@/lib/navigate"; // Lightweight wrapper for client-side nav
 import { useEffect } from "react";
 // import { LogIn } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 
 export default function AuthPage() {
   const { user, login, loading } = useAuth();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // If logged in, redirect to dashboard
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/dashboard");
+  //   }
+  // }, [user, navigate]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted">
