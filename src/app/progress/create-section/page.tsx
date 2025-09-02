@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createSectionAPI } from "@/lib/server/progress";
+import { createSectionAPI } from "@/lib/server/sections";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CreateSectionPage() {

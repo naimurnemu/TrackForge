@@ -1,16 +1,12 @@
-import { Topic } from "./topic";
-
 export type PhaseType = "Learn" | "Practice" | "Project";
 
-export interface Phase {
+export type Phase = {
   id: string;
-  sectionId: string;
-  userId: string;
   title: string;
-  description?: string;
   type: PhaseType;
-  createdAt: string;
-  updatedAt: string;
+  description?: string;
   completed: boolean;
-  topics?: Topic[];
-}
+  progress: number;
+  createdAt: Date;
+  updatedAt?: Date;
+};

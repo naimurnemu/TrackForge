@@ -19,4 +19,4 @@ const adminApp =
     : getApps()[0];
 
 export const adminAuth = getAdminAuth(adminApp);
-export const adminDb = getAdminFirestore(adminApp); 
+export const adminDB = getAdminFirestore(adminApp); 

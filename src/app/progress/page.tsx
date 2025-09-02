@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Plus, BookOpen, Folder } from "lucide-react";
 import { Section } from "@/types";
-import { getUserSectionsAPI } from "@/lib/server/progress";
+import { getUserSectionsAPI } from "@/lib/server/sections";
 import { getCurrentUser } from "@/lib/server/auth";
 
 export default async function ProgressPage() {
@@ -27,6 +27,8 @@ export default async function ProgressPage() {
   }
 
   const sections: Section[] = await getUserSectionsAPI(user.uid);
+
+  console.log("sections", sections);
 
   return (
     <div className="container mx-auto px-4 py-8">

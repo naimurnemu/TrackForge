@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -16,9 +17,12 @@ export default function Navbar() {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-8">
+          <div className="flex justify-center items-center gap-4">
+          <Image src={"/images/logos/logo.png"} alt={"Logo"} width={200} height={180} className="h-16 w-auto" />
           <Link href="/dashboard" className="text-2xl font-bold text-primary">
             TrackForge
           </Link>
+          </div>
 
           {/* Nav Links */}
           <nav className="hidden md:flex gap-6">

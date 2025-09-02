@@ -1,12 +1,9 @@
-import { Phase } from "./phase";
-
-export interface Section {
+export type Section = {
   id: string;
-  userId: string;
   title: string;
   description?: string;
   target?: string;
-  createdAt: string;
-  updatedAt: string;
-  phases?: Phase[];
-}
+  createdAt: Date;
+  updatedAt: Date;
+  progress?: number; 
+};
