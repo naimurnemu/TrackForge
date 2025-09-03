@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,13 +14,17 @@ import { useAuth } from "@/context/AuthContext";
 export default function CreatePhasePage({
   params,
 }: {
-  params: { sectionId: string };
+  params: Promise<{ sectionId: string }>;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user } = useAuth();
   const userId = user?.uid || "";
+
+  const resolvedParams = React.use(params);
+  const { sectionId } = resolvedParams;
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,14 +45,14 @@ export default function CreatePhasePage({
     try {
       const data = await createPhaseAPI({
         userId,
-        sectionId: params.sectionId,
+        sectionId: sectionId,
         title,
         description,
         type,
       });
 
       if (data?.success && data.data?.phaseId) {
-        router.push(`/progress/${params.sectionId}`);
+        router.push(`/progress/${sectionId}`);
         router.refresh();
       } else {
         setError(data?.message || "Failed to create phase");
@@ -117,7 +121,7 @@ export default function CreatePhasePage({
                 {loading ? "Creating..." : "Create Phase"}
               </Button>
               <Button asChild variant="outline">
-                <Link href={`/progress/${params.sectionId}`}>Cancel</Link>
+                <Link href={`/progress/${sectionId}`}>Cancel</Link>
               </Button>
             </div>
           </form>

@@ -2,10 +2,10 @@ import { NextRequest } from "next/server";
 import { errorResponse, successResponse } from "@/lib/api/response";
 import { getPhasesBySection } from "@/lib/db/phases";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params }: { params: { sectionId: string } }) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
+  const sectionId = params.sectionId;
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);
 

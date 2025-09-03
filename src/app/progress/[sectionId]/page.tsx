@@ -1,7 +1,8 @@
+// app/progress/[sectionId]/page.tsx
 import { notFound } from "next/navigation";
 import { getSectionByIdAPI } from "@/lib/server/sections";
 import { getCurrentUser } from "@/lib/server/auth";
-// import { SectionHeader } from "./components/SectionHeader";
+import { getPhasesBySectionIdAPI } from "@/lib/server/phases";
 import { PhaseList } from "./components/PhaseList";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -15,8 +16,12 @@ export default async function SectionPage({
   const user = await getCurrentUser();
   if (!user) return <div className="container p-8">Not authenticated</div>;
 
-  const section = await getSectionByIdAPI(user.uid, params.sectionId);
+  const sectionId = params.sectionId;
+
+  const section = await getSectionByIdAPI(user.uid, sectionId);
   if (!section) return notFound();
+
+  const phases = await getPhasesBySectionIdAPI(user.uid, sectionId);
 
   return (
     <LayoutShell
@@ -24,42 +29,19 @@ export default async function SectionPage({
       subtitle="Manage phases and track your learning progress"
       showCreateButton
       createHref={`/progress/${section.id}/create`}
-      createdAt={section.createdAt}
       createLabel="New Phase"
+      createdAt={section.createdAt}
     >
-      {/* Section Header */}
-      {/* <SectionHeader
-        title={section.title}
-        description={section.description}
-        target={section.target}
-        createdAt={section.createdAt}
-        progress={section.progress || 0}
-      /> */}
-
-      {/* Edit Button */}
+      {/* Edit Section Button */}
       <div className="mt-6">
         <Button asChild variant="outline" size="sm">
           <Link href={`/progress/${section.id}/edit`}>Edit Section</Link>
         </Button>
       </div>
 
-      {/* Phases Placeholder */}
+      {/* Phase List */}
       <div className="mt-12">
-        <PhaseList>
-          {/* Will be populated with PhaseCard components in next level */}
-          <div className="text-center py-8 text-muted-foreground">
-            <p>Phases will appear here.</p>
-            <p className="text-sm mt-1">
-              <Link
-                href={`/progress/${section.id}/create`}
-                className="text-primary hover:underline"
-              >
-                Create your first phase
-              </Link>{" "}
-              to get started.
-            </p>
-          </div>
-        </PhaseList>
+        <PhaseList phases={phases} />
       </div>
     </LayoutShell>
   );

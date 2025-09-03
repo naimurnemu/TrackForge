@@ -7,7 +7,7 @@ export async function getTopicsByPhaseIdAPI(
 ) {
   try {
     const res = await fetch(
-      `${API_URL}/api/progress/section/${sectionId}/phase/${phaseId}/topic?userId=${userId}`,
+      `${API_URL}/section/${sectionId}/phase/${phaseId}/topic?userId=${userId}`,
       {
         method: "GET",
         cache: "no-store",
@@ -30,7 +30,7 @@ export async function getTopicByIdAPI(
 ) {
   try {
     const res = await fetch(
-      `${API_URL}/api/progress/section/${sectionId}/phase/${phaseId}/topic/${topicId}?userId=${userId}`,
+      `${API_URL}/section/${sectionId}/phase/${phaseId}/topic/${topicId}?userId=${userId}`,
       {
         method: "GET",
         cache: "no-store",
@@ -56,7 +56,7 @@ export async function createTopicAPI(payload: {
     const { userId, sectionId, phaseId, ...body } = payload;
 
     const res = await fetch(
-      `${API_URL}/api/progress/section/${sectionId}/phase/${phaseId}/topic/create`,
+      `${API_URL}/section/${sectionId}/phase/${phaseId}/topic/create`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -84,7 +84,7 @@ export async function updateTopicAPI(
 ) {
   try {
     const res = await fetch(
-      `${API_URL}/api/progress/section/${sectionId}/phase/${phaseId}/topic/${topicId}?userId=${userId}`,
+      `${API_URL}/section/${sectionId}/phase/${phaseId}/topic/${topicId}?userId=${userId}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -110,7 +110,7 @@ export async function completeTopicAPI(
 ) {
   try {
     const res = await fetch(
-      `${API_URL}/api/progress/section/${sectionId}/phase/${phaseId}/topic/${topicId}/complete`,
+      `${API_URL}/section/${sectionId}/phase/${phaseId}/topic/${topicId}/complete`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -134,7 +134,7 @@ export async function deleteTopicAPI(
 ) {
   try {
     const res = await fetch(
-      `${API_URL}/api/progress/section/${sectionId}/phase/${phaseId}/topic/${topicId}?userId=${userId}`,
+      `${API_URL}/section/${sectionId}/phase/${phaseId}/topic/${topicId}?userId=${userId}`,
       {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },

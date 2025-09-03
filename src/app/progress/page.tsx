@@ -1,4 +1,3 @@
-// app/progress/page.tsx
 import { LayoutShell } from "./components/LayoutShell";
 import { SectionCard } from "./components/SectionCard";
 import { getUserSectionsAPI } from "@/lib/server/sections";

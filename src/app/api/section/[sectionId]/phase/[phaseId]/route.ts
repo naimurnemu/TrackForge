@@ -5,12 +5,12 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { sectionId: string; phaseId: string } }
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
-  const phaseId = params.id;
+  const sectionId = params.sectionId;
+  const phaseId = params.phaseId;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);
@@ -19,16 +19,18 @@ export async function GET(
     const phase = await getPhaseById(userId, sectionId, phaseId);
     if (!phase) return errorResponse("Phase not found", 404);
     return successResponse({ phase }, "Phase fetched", 200);
-  }catch (error) {
+  } catch (error) {
     return errorResponse("Failed to fetch phase", 500, error);
   }
 }
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(req: NextRequest,
+  { params }: { params: { sectionId: string; phaseId: string } }
+) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
-  const phaseId = searchParams.get("phaseId");
+  const sectionId = params.sectionId;
+  const phaseId = params.phaseId;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);
@@ -54,12 +56,12 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+ { params }: { params: { sectionId: string; phaseId: string } }
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
-  const phaseId = params.id;
+  const sectionId = params.sectionId;
+  const phaseId = params.phaseId;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);

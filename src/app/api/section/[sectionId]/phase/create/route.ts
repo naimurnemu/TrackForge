@@ -3,9 +3,10 @@ import { CreatePhase } from "@/lib/db/phases";
 import { NextRequest } from "next/server";
 
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, { params }: { params: { sectionId: string } }) {
+  const sectionId = params.sectionId;
   try {
-    const { userId, sectionId, title, description, type } = await req.json();
+    const { userId, title, description, type } = await req.json();
 
     if (!userId || !sectionId) {
       return errorResponse("Missing required fields: userId or sectionId", 400);

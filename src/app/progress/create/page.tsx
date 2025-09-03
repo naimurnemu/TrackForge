@@ -18,7 +18,6 @@ export default function CreateSectionPage() {
   const { user } = useAuth();
   const userId = user?.uid || "";
 
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
