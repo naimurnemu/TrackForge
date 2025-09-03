@@ -1,23 +1,27 @@
+// app/progress/[sectionId]/[phaseId]/edit/page.tsx
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { createSectionAPI } from "@/lib/server/sections";
+import { updatePhaseAPI } from "@/lib/server/phases";
 import { useAuth } from "@/context/AuthContext";
 
-export default function CreateSectionPage() {
+export default function EditPhasePage({
+  params,
+}: {
+  params: { sectionId: string; phaseId: string };
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user } = useAuth();
   const userId = user?.uid || "";
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,17 +29,28 @@ export default function CreateSectionPage() {
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const target = formData.get("target") as string;
+    const title = (formData.get("title") as string)?.trim();
+    const description = (formData.get("description") as string)?.trim();
+    const type = (formData.get("type") as "Learn" | "Practice" | "Project") || "Learn";
+
+    if (!title) {
+      setError("Title is required");
+      setLoading(false);
+      return;
+    }
 
     try {
+      const success = await updatePhaseAPI(userId, params.sectionId, params.phaseId, {
+        title,
+        description,
+        type,
+      });
 
-      console.log("Creating section... client-side");
-      const data = await createSectionAPI({ title, description, target, userId });
-
-      if (data?.data?.sectionId) {
-        router.push("/progress");
+      if (success) {
+        router.push(`/progress/${params.sectionId}/${params.phaseId}`);
+        router.refresh();
+      } else {
+        setError("Failed to update phase");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -48,9 +63,9 @@ export default function CreateSectionPage() {
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Create New Section</CardTitle>
+          <CardTitle className="text-2xl">Edit Phase</CardTitle>
           <CardDescription>
-            Add a new learning section to track your progress.
+            Update the title, type, or description of this phase.
           </CardDescription>
         </CardHeader>
 
@@ -62,45 +77,50 @@ export default function CreateSectionPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title Field */}
             <div className="space-y-2">
-              <Label htmlFor="title">Section Title *</Label>
+              <Label htmlFor="title">Title *</Label>
               <Input
                 id="title"
                 name="title"
-                placeholder="e.g., Web Development"
+                defaultValue=""
+                placeholder="e.g., Phase 1: React Basics"
                 required
               />
             </div>
 
-            {/* Description Field */}
+            <div className="space-y-2">
+              <Label htmlFor="type">Phase Type</Label>
+              <select
+                name="type"
+                id="type"
+                defaultValue="Learn"
+                className="w-full p-2 border rounded-md bg-background"
+              >
+                <option value="Learn">Learn</option>
+                <option value="Practice">Practice</option>
+                <option value="Project">Project</option>
+              </select>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 name="description"
-                placeholder="Explain what this section is about..."
+                defaultValue=""
+                placeholder="Describe what this phase covers..."
                 rows={4}
               />
             </div>
 
-            {/* Target Field */}
-            <div className="space-y-2">
-              <Label htmlFor="target">Target</Label>
-              <Input
-                id="target"
-                name="target"
-                placeholder="e.g., Complete 3 projects in 3 months"
-              />
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-4">
+            <div className="flex gap-4 pt-4">
               <Button type="submit" disabled={loading}>
-                {loading ? "Creating..." : "Create Section"}
+                {loading ? "Saving..." : "Save Changes"}
               </Button>
               <Button asChild variant="outline">
-                <Link href="/progress">Cancel</Link>
+                <Link href={`/progress/${params.sectionId}/${params.phaseId}`}>
+                  Cancel
+                </Link>
               </Button>
             </div>
           </form>

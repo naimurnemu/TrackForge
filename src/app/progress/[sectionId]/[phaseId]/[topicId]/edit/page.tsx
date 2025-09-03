@@ -1,3 +1,4 @@
+// app/progress/[sectionId]/[phaseId]/[topicId]/edit/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -8,13 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { updateSectionAPI } from "@/lib/server/sections";
+import { updateTopicAPI } from "@/lib/server/topics";
 import { useAuth } from "@/context/AuthContext";
 
-export default function EditSectionPage({
+export default function EditTopicPage({
   params,
 }: {
-  params: { sectionId: string };
+  params: { sectionId: string; phaseId: string; topicId: string };
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +31,6 @@ export default function EditSectionPage({
     const formData = new FormData(e.currentTarget);
     const title = (formData.get("title") as string)?.trim();
     const description = (formData.get("description") as string)?.trim();
-    const target = (formData.get("target") as string)?.trim();
 
     if (!title) {
       setError("Title is required");
@@ -39,17 +39,16 @@ export default function EditSectionPage({
     }
 
     try {
-      const success = await updateSectionAPI(userId, params.sectionId, {
+      const success = await updateTopicAPI(userId, params.sectionId, params.phaseId, params.topicId, {
         title,
         description,
-        target,
       });
 
       if (success) {
-        router.push(`/progress/${params.sectionId}`);
+        router.push(`/progress/${params.sectionId}/${params.phaseId}/${params.topicId}`);
         router.refresh();
       } else {
-        setError("Failed to update section");
+        setError("Failed to update topic");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -62,9 +61,9 @@ export default function EditSectionPage({
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Edit Section</CardTitle>
+          <CardTitle className="text-2xl">Edit Topic</CardTitle>
           <CardDescription>
-            Update the details of this learning section.
+            Update the title and description of this topic.
           </CardDescription>
         </CardHeader>
 
@@ -82,8 +81,8 @@ export default function EditSectionPage({
                 id="title"
                 name="title"
                 defaultValue=""
+                placeholder="e.g., useState Hook"
                 required
-                placeholder="e.g., Full-Stack Development"
               />
             </div>
 
@@ -93,18 +92,8 @@ export default function EditSectionPage({
                 id="description"
                 name="description"
                 defaultValue=""
-                placeholder="What will you learn in this section?"
+                placeholder="Explain what you learned..."
                 rows={4}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="target">Target</Label>
-              <Input
-                id="target"
-                name="target"
-                defaultValue=""
-                placeholder="e.g., Build 5 projects in 6 months"
               />
             </div>
 
@@ -113,7 +102,9 @@ export default function EditSectionPage({
                 {loading ? "Saving..." : "Save Changes"}
               </Button>
               <Button asChild variant="outline">
-                <Link href={`/progress/${params.sectionId}`}>Cancel</Link>
+                <Link href={`/progress/${params.sectionId}/${params.phaseId}/${params.topicId}`}>
+                  Cancel
+                </Link>
               </Button>
             </div>
           </form>

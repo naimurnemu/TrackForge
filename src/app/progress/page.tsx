@@ -1,109 +1,75 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Plus, BookOpen, Folder } from "lucide-react";
-import { Section } from "@/types";
+// app/progress/page.tsx
+import { LayoutShell } from "./components/LayoutShell";
+import { SectionCard } from "./components/SectionCard";
 import { getUserSectionsAPI } from "@/lib/server/sections";
 import { getCurrentUser } from "@/lib/server/auth";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Section } from "@/types";
 
 export default async function ProgressPage() {
   const user = await getCurrentUser();
-  if (!user) return <div>Loading...</div>;
-
-  if (!user) {
-    // This should normally never happen because middleware protects /progress
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <p className="text-red-500">Not authenticated</p>
-      </div>
-    );
-  }
+  if (!user) return <div className="container p-8">Not authenticated</div>;
 
   const sections: Section[] = await getUserSectionsAPI(user.uid);
 
-  console.log("sections", sections);
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      {/* <h1 className="text-3xl font-bold">Progress</h1> */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Your Progress</h1>
-          <p className="text-muted-foreground">
-            Manage your learning sections and track growth
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/progress/create-section">
-            <Plus className="h-4 w-4 mr-2" />
-            New Section
-          </Link>
-        </Button>
-      </div>
-
-      {/* Empty State */}
+    <LayoutShell
+      title="Your Progress"
+      subtitle="Manage your learning sections and track growth"
+      showCreateButton
+      createHref="/progress/create"
+      createLabel="New Section"
+    >
       {sections.length === 0 ? (
-        <Card className="text-center py-16">
-          <CardHeader>
-            <Folder className="h-12 w-12 mx-auto text-muted-foreground" />
-            <CardTitle>No sections yet</CardTitle>
-            <CardDescription>
-              Start by creating your first learning section.
-            </CardDescription>
-          </CardHeader>
-          <CardFooter className="justify-center">
-            <Button asChild>
-              <Link href="/progress/create-section">
-                <Plus className="h-4 w-4 mr-2" />
-                Create Your First Section
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
+        <div className="text-center py-16">
+          <div className="inline-block p-4 bg-muted rounded-full mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-muted-foreground"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-semibold mb-2">No sections yet</h2>
+          <p className="text-muted-foreground mb-6">
+            Start by creating your first learning section.
+          </p>
+          <Button asChild>
+            <Link href="/progress/create">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              Create Your First Section
+            </Link>
+          </Button>
+        </div>
       ) : (
-        /* Sections Grid */
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {sections.map((section: Section) => (
-            <Card key={section.id} className="flex flex-col">
-              <CardHeader>
-                <CardTitle className="text-xl">{section.title}</CardTitle>
-                <CardDescription>
-                  {section.createdAt
-                    ? new Date(section.createdAt).toLocaleDateString()
-                    : ""}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1 space-y-3">
-                {section.description && (
-                  <p className="text-sm text-foreground">{section.description}</p>
-                )}
-                {section.target && (
-                  <p className="text-sm">
-                    <span className="text-muted-foreground">Target: </span>
-                    {section.target}
-                  </p>
-                )}
-              </CardContent>
-              <CardFooter>
-                <Button asChild variant="secondary" className="w-full">
-                  <Link href={`/progress/${section.id}`}>
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Open Section
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
+          {sections.map((section) => (
+            <SectionCard key={section.id} section={section} />
           ))}
         </div>
       )}
-    </div>
+    </LayoutShell>
   );
 }

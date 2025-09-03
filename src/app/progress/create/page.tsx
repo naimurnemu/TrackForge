@@ -1,26 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { updateSectionAPI } from "@/lib/server/sections";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createSectionAPI } from "@/lib/server/sections";
 import { useAuth } from "@/context/AuthContext";
 
-export default function EditSectionPage({
-  params,
-}: {
-  params: { sectionId: string };
-}) {
+export default function CreateSectionPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user } = useAuth();
   const userId = user?.uid || "";
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,28 +25,15 @@ export default function EditSectionPage({
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const title = (formData.get("title") as string)?.trim();
-    const description = (formData.get("description") as string)?.trim();
-    const target = (formData.get("target") as string)?.trim();
-
-    if (!title) {
-      setError("Title is required");
-      setLoading(false);
-      return;
-    }
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const target = formData.get("target") as string;
 
     try {
-      const success = await updateSectionAPI(userId, params.sectionId, {
-        title,
-        description,
-        target,
-      });
+      const data = await createSectionAPI({ title, description, target, userId });
 
-      if (success) {
-        router.push(`/progress/${params.sectionId}`);
-        router.refresh();
-      } else {
-        setError("Failed to update section");
+      if (data?.data?.sectionId) {
+        router.push("/progress");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -62,9 +46,9 @@ export default function EditSectionPage({
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Edit Section</CardTitle>
+          <CardTitle className="text-2xl">Create New Section</CardTitle>
           <CardDescription>
-            Update the details of this learning section.
+            Add a new learning section to track your progress.
           </CardDescription>
         </CardHeader>
 
@@ -76,44 +60,45 @@ export default function EditSectionPage({
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Title Field */}
             <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">Section Title *</Label>
               <Input
                 id="title"
                 name="title"
-                defaultValue=""
+                placeholder="e.g., Web Development"
                 required
-                placeholder="e.g., Full-Stack Development"
               />
             </div>
 
+            {/* Description Field */}
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 name="description"
-                defaultValue=""
-                placeholder="What will you learn in this section?"
+                placeholder="Explain what this section is about..."
                 rows={4}
               />
             </div>
 
+            {/* Target Field */}
             <div className="space-y-2">
               <Label htmlFor="target">Target</Label>
               <Input
                 id="target"
                 name="target"
-                defaultValue=""
-                placeholder="e.g., Build 5 projects in 6 months"
+                placeholder="e.g., Complete 3 projects in 3 months"
               />
             </div>
 
-            <div className="flex gap-4 pt-4">
+            {/* Actions */}
+            <div className="flex gap-4">
               <Button type="submit" disabled={loading}>
-                {loading ? "Saving..." : "Save Changes"}
+                {loading ? "Creating..." : "Create Section"}
               </Button>
               <Button asChild variant="outline">
-                <Link href={`/progress/${params.sectionId}`}>Cancel</Link>
+                <Link href="/progress">Cancel</Link>
               </Button>
             </div>
           </form>

@@ -1,3 +1,4 @@
+// app/progress/[sectionId]/[phaseId]/create/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -8,13 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { updateSectionAPI } from "@/lib/server/sections";
+import { createTopicAPI } from "@/lib/server/topics";
 import { useAuth } from "@/context/AuthContext";
 
-export default function EditSectionPage({
+export default function CreateTopicPage({
   params,
 }: {
-  params: { sectionId: string };
+  params: { sectionId: string; phaseId: string };
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +31,6 @@ export default function EditSectionPage({
     const formData = new FormData(e.currentTarget);
     const title = (formData.get("title") as string)?.trim();
     const description = (formData.get("description") as string)?.trim();
-    const target = (formData.get("target") as string)?.trim();
 
     if (!title) {
       setError("Title is required");
@@ -39,17 +39,19 @@ export default function EditSectionPage({
     }
 
     try {
-      const success = await updateSectionAPI(userId, params.sectionId, {
+      const data = await createTopicAPI({
+        userId,
+        sectionId: params.sectionId,
+        phaseId: params.phaseId,
         title,
         description,
-        target,
       });
 
-      if (success) {
-        router.push(`/progress/${params.sectionId}`);
+      if (data?.success && data.data?.topicId) {
+        router.push(`/progress/${params.sectionId}/${params.phaseId}`);
         router.refresh();
       } else {
-        setError("Failed to update section");
+        setError(data?.message || "Failed to create topic");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -62,9 +64,9 @@ export default function EditSectionPage({
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Edit Section</CardTitle>
+          <CardTitle className="text-2xl">Create New Topic</CardTitle>
           <CardDescription>
-            Update the details of this learning section.
+            Add a topic to this phase to track your learning.
           </CardDescription>
         </CardHeader>
 
@@ -77,13 +79,12 @@ export default function EditSectionPage({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">Topic Title *</Label>
               <Input
                 id="title"
                 name="title"
-                defaultValue=""
+                placeholder="e.g., useState Hook"
                 required
-                placeholder="e.g., Full-Stack Development"
               />
             </div>
 
@@ -92,28 +93,19 @@ export default function EditSectionPage({
               <Textarea
                 id="description"
                 name="description"
-                defaultValue=""
-                placeholder="What will you learn in this section?"
+                placeholder="What will you learn in this topic?"
                 rows={4}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="target">Target</Label>
-              <Input
-                id="target"
-                name="target"
-                defaultValue=""
-                placeholder="e.g., Build 5 projects in 6 months"
               />
             </div>
 
             <div className="flex gap-4 pt-4">
               <Button type="submit" disabled={loading}>
-                {loading ? "Saving..." : "Save Changes"}
+                {loading ? "Creating..." : "Create Topic"}
               </Button>
               <Button asChild variant="outline">
-                <Link href={`/progress/${params.sectionId}`}>Cancel</Link>
+                <Link href={`/progress/${params.sectionId}/${params.phaseId}`}>
+                  Cancel
+                </Link>
               </Button>
             </div>
           </form>

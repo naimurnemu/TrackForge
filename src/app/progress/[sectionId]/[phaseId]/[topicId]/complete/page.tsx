@@ -1,20 +1,20 @@
+// app/progress/[sectionId]/[phaseId]/[topicId]/complete/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { updateSectionAPI } from "@/lib/server/sections";
+import { updateTopicAPI } from "@/lib/server/topics";
 import { useAuth } from "@/context/AuthContext";
 
-export default function EditSectionPage({
+export default function CompleteTopicPage({
   params,
 }: {
-  params: { sectionId: string };
+  params: { sectionId: string; phaseId: string; topicId: string };
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,28 +28,32 @@ export default function EditSectionPage({
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const title = (formData.get("title") as string)?.trim();
-    const description = (formData.get("description") as string)?.trim();
-    const target = (formData.get("target") as string)?.trim();
+    const summary = (formData.get("summary") as string)?.trim();
+    const timeSpentMinutes = Number(formData.get("timeSpentMinutes"));
 
-    if (!title) {
-      setError("Title is required");
+    if (!summary || summary.length < 10) {
+      setError("Summary must be at least 10 characters long.");
+      setLoading(false);
+      return;
+    }
+    if (!timeSpentMinutes || timeSpentMinutes <= 0) {
+      setError("Time spent must be a positive number.");
       setLoading(false);
       return;
     }
 
     try {
-      const success = await updateSectionAPI(userId, params.sectionId, {
-        title,
-        description,
-        target,
+      const success = await updateTopicAPI(userId, params.sectionId, params.phaseId, params.topicId, {
+        completed: true,
+        summary,
+        timeSpentMinutes,
       });
 
       if (success) {
-        router.push(`/progress/${params.sectionId}`);
+        router.push(`/progress/${params.sectionId}/${params.phaseId}/${params.topicId}`);
         router.refresh();
       } else {
-        setError("Failed to update section");
+        setError("Failed to complete topic");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -62,9 +66,9 @@ export default function EditSectionPage({
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Edit Section</CardTitle>
+          <CardTitle className="text-2xl">Complete Topic</CardTitle>
           <CardDescription>
-            Update the details of this learning section.
+            Share what you learned and how long it took.
           </CardDescription>
         </CardHeader>
 
@@ -77,43 +81,40 @@ export default function EditSectionPage({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
-              <Input
-                id="title"
-                name="title"
-                defaultValue=""
-                required
-                placeholder="e.g., Full-Stack Development"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="summary">Summary *</Label>
               <Textarea
-                id="description"
-                name="description"
-                defaultValue=""
-                placeholder="What will you learn in this section?"
-                rows={4}
+                id="summary"
+                name="summary"
+                placeholder="What did you learn? How does it work?"
+                rows={6}
+                required
               />
+              <p className="text-sm text-muted-foreground">
+                Write in your own words to reinforce learning.
+              </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="target">Target</Label>
-              <Input
-                id="target"
-                name="target"
-                defaultValue=""
-                placeholder="e.g., Build 5 projects in 6 months"
+              <Label htmlFor="timeSpentMinutes">Time Spent (minutes) *</Label>
+              <input
+                type="number"
+                id="timeSpentMinutes"
+                name="timeSpentMinutes"
+                required
+                min="1"
+                className="w-full p-2 border rounded-md"
+                placeholder="e.g., 45"
               />
             </div>
 
             <div className="flex gap-4 pt-4">
               <Button type="submit" disabled={loading}>
-                {loading ? "Saving..." : "Save Changes"}
+                {loading ? "Saving..." : "Mark as Complete"}
               </Button>
               <Button asChild variant="outline">
-                <Link href={`/progress/${params.sectionId}`}>Cancel</Link>
+                <Link href={`/progress/${params.sectionId}/${params.phaseId}/${params.topicId}`}>
+                  Cancel
+                </Link>
               </Button>
             </div>
           </form>

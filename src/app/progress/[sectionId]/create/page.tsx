@@ -8,10 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { updateSectionAPI } from "@/lib/server/sections";
+import { createPhaseAPI } from "@/lib/server/phases";
 import { useAuth } from "@/context/AuthContext";
 
-export default function EditSectionPage({
+export default function CreatePhasePage({
   params,
 }: {
   params: { sectionId: string };
@@ -30,7 +30,7 @@ export default function EditSectionPage({
     const formData = new FormData(e.currentTarget);
     const title = (formData.get("title") as string)?.trim();
     const description = (formData.get("description") as string)?.trim();
-    const target = (formData.get("target") as string)?.trim();
+    const type = (formData.get("type") as "Learn" | "Practice" | "Project") || "Learn";
 
     if (!title) {
       setError("Title is required");
@@ -39,17 +39,19 @@ export default function EditSectionPage({
     }
 
     try {
-      const success = await updateSectionAPI(userId, params.sectionId, {
+      const data = await createPhaseAPI({
+        userId,
+        sectionId: params.sectionId,
         title,
         description,
-        target,
+        type,
       });
 
-      if (success) {
+      if (data?.success && data.data?.phaseId) {
         router.push(`/progress/${params.sectionId}`);
         router.refresh();
       } else {
-        setError("Failed to update section");
+        setError(data?.message || "Failed to create phase");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -62,9 +64,9 @@ export default function EditSectionPage({
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Edit Section</CardTitle>
+          <CardTitle className="text-2xl">Create New Phase</CardTitle>
           <CardDescription>
-            Update the details of this learning section.
+            Add a phase (e.g., Learn, Practice, Project) to this section.
           </CardDescription>
         </CardHeader>
 
@@ -77,14 +79,27 @@ export default function EditSectionPage({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">Phase Title *</Label>
               <Input
                 id="title"
                 name="title"
-                defaultValue=""
+                placeholder="e.g., Phase 1: React Basics"
                 required
-                placeholder="e.g., Full-Stack Development"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="type">Phase Type</Label>
+              <select
+                name="type"
+                id="type"
+                className="w-full p-2 border rounded-md bg-background"
+                defaultValue="Learn"
+              >
+                <option value="Learn">Learn</option>
+                <option value="Practice">Practice</option>
+                <option value="Project">Project</option>
+              </select>
             </div>
 
             <div className="space-y-2">
@@ -92,25 +107,14 @@ export default function EditSectionPage({
               <Textarea
                 id="description"
                 name="description"
-                defaultValue=""
-                placeholder="What will you learn in this section?"
+                placeholder="Describe what this phase covers..."
                 rows={4}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="target">Target</Label>
-              <Input
-                id="target"
-                name="target"
-                defaultValue=""
-                placeholder="e.g., Build 5 projects in 6 months"
               />
             </div>
 
             <div className="flex gap-4 pt-4">
               <Button type="submit" disabled={loading}>
-                {loading ? "Saving..." : "Save Changes"}
+                {loading ? "Creating..." : "Create Phase"}
               </Button>
               <Button asChild variant="outline">
                 <Link href={`/progress/${params.sectionId}`}>Cancel</Link>
