@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,8 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import { updateSectionAPI } from "@/lib/server/sections";
+import { getSectionByIdAPI, updateSectionAPI } from "@/lib/server/sections";
 import { useAuth } from "@/context/AuthContext";
+import { Section } from "@/types";
 
 export default function EditSectionPage({
   params,
@@ -18,9 +19,21 @@ export default function EditSectionPage({
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [section, setSection] = useState<Section | null>(null);
   const router = useRouter();
   const { user } = useAuth();
   const userId = user?.uid || "";
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+    (async () => {
+      const section = await getSectionByIdAPI(userId, params.sectionId);
+      setSection(section);
+    })();
+
+  }, [userId, params.sectionId, router, user]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

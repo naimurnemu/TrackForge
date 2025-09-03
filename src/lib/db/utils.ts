@@ -1,8 +1,8 @@
 import { DocumentReference } from "firebase-admin/firestore";
 
 /**
- * Recursively deletes a Firestore document and all its subcollections.
- * WARNING: This is not atomic and may require retries for large data.
+ * Deletes a document and all its subcollections recursively.
+ * @param ref
  */
 export async function deleteDocumentWithSubcollections(
   ref: DocumentReference

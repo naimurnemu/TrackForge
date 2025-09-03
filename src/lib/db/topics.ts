@@ -17,7 +17,7 @@ export async function createTopic(
   return docRef.id;
 }
 
-export async function getTopicsByPhaseId(
+export async function getTopicsByPhase(
   userId: string,
   sectionId: string,
   phaseId: string
@@ -89,3 +89,25 @@ export async function deleteTopic(
   await getPhaseTopicDoc(userId, sectionId, phaseId, topicId).delete();
   return true;
 }
+
+export async function completeTopic(
+  userId: string,
+  sectionId: string,
+  phaseId: string,
+  topicId: string, 
+  summary: string,
+  timeSpentMinutes: number
+) {
+  const topicRef = getPhaseTopicDoc(userId, sectionId, phaseId, topicId);
+
+  const payload = {
+    completed: true,
+    summary,
+    timeSpentMinutes,
+    updatedAt: new Date(),
+  };
+
+  await topicRef.update(payload);
+  return true;
+}
+

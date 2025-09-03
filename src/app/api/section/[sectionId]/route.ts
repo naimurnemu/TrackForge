@@ -8,11 +8,11 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { sectionId: string } }
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = params.id;
+  const sectionId = params.sectionId;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);
@@ -26,10 +26,10 @@ export async function GET(
   }
 }
 
-export async function PUT(req: NextRequest) {
+export async function PUT(req: NextRequest, { params }: { params: { sectionId: string } }) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
+  const sectionId = params.sectionId;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);
@@ -54,11 +54,11 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { sectionId: string } }
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = params.id;
+  const sectionId = params.sectionId;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);

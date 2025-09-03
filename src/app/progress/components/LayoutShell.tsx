@@ -9,6 +9,7 @@ type Props = {
   subtitle?: string;
   showCreateButton?: boolean;
   createHref?: string;
+  createdAt?: Date | string | number;
   createLabel?: string;
 };
 
@@ -18,6 +19,7 @@ export function LayoutShell({
   subtitle = "Manage your learning journey",
   showCreateButton = false,
   createHref = "/progress/create-section",
+  createdAt,
   createLabel = "New Section",
 }: Props) {
   return (
@@ -26,6 +28,11 @@ export function LayoutShell({
         <div>
           <h1 className="text-3xl font-bold">{title}</h1>
           <p className="text-muted-foreground">{subtitle}</p>
+          {createdAt && (
+            <p className="text-sm text-muted-foreground">
+              Created on {new Date(createdAt).toLocaleDateString()}
+            </p>
+          )}
         </div>
         {showCreateButton && (
           <Button asChild>

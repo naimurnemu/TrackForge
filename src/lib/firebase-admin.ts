@@ -1,4 +1,3 @@
-// admin.ts or server-side Firebase
 import {
   initializeApp as initializeAdminApp,
   getApps,

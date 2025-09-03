@@ -1,4 +1,3 @@
-// app/progress/[sectionId]/[phaseId]/page.tsx
 import { notFound } from "next/navigation";
 import { getPhaseByIdAPI } from "@/lib/server/phases";
 import { getTopicsByPhaseIdAPI } from "@/lib/server/topics";

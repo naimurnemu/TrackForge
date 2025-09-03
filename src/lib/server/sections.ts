@@ -1,16 +1,12 @@
-// src/lib/server/sections.ts
 const API_URL = process.env.NEXT_PUBLIC_APP_URL;
 
-/**
- * Fetch all sections for a user
- */
 export async function getUserSectionsAPI(userId: string) {
   try {
-    const res = await fetch(`${API_URL}/api/progress/section?userId=${userId}`, {
+    const res = await fetch(`${API_URL}/section?userId=${userId}`, {
       method: "GET",
       cache: "no-store",
     });
-
+ 
     const data = await res.json();
     return data.data?.sections ?? [];
   } catch (err) {
@@ -19,13 +15,10 @@ export async function getUserSectionsAPI(userId: string) {
   }
 }
 
-/**
- * Fetch a single section by ID
- */
 export async function getSectionByIdAPI(userId: string, sectionId: string) {
   try {
     const res = await fetch(
-      `${API_URL}/api/progress/section/${sectionId}?userId=${userId}`,
+      `${API_URL}/section/${sectionId}?userId=${userId}`,
       {
         method: "GET",
         cache: "no-store",
@@ -40,9 +33,6 @@ export async function getSectionByIdAPI(userId: string, sectionId: string) {
   }
 }
 
-/**
- * Create a new section
- */
 export async function createSectionAPI(payload: {
   userId: string;
   title: string;
@@ -50,7 +40,7 @@ export async function createSectionAPI(payload: {
   target?: string;
 }) {
   try {
-    const res = await fetch(`${API_URL}/api/progress/section/create`, {
+    const res = await fetch(`${API_URL}/section/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -64,16 +54,13 @@ export async function createSectionAPI(payload: {
   }
 }
 
-/**
- * Update a section
- */
 export async function updateSectionAPI(
   userId: string,
   sectionId: string,
   updates: { title?: string; description?: string; target?: string }
 ) {
   try {
-    const res = await fetch(`${API_URL}/api/progress/section/${sectionId}?userId=${userId}`, {
+    const res = await fetch(`${API_URL}/section/${sectionId}?userId=${userId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates),
@@ -87,12 +74,9 @@ export async function updateSectionAPI(
   }
 }
 
-/**
- * Delete a section
- */
 export async function deleteSectionAPI(userId: string, sectionId: string) {
   try {
-    const res = await fetch(`${API_URL}/api/progress/section/${sectionId}?userId=${userId}`, {
+    const res = await fetch(`${API_URL}/section/${sectionId}?userId=${userId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });

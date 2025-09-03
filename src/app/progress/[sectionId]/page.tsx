@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getSectionByIdAPI } from "@/lib/server/sections";
 import { getCurrentUser } from "@/lib/server/auth";
-import { SectionHeader } from "./components/SectionHeader";
+// import { SectionHeader } from "./components/SectionHeader";
 import { PhaseList } from "./components/PhaseList";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -24,16 +24,17 @@ export default async function SectionPage({
       subtitle="Manage phases and track your learning progress"
       showCreateButton
       createHref={`/progress/${section.id}/create`}
+      createdAt={section.createdAt}
       createLabel="New Phase"
     >
       {/* Section Header */}
-      <SectionHeader
+      {/* <SectionHeader
         title={section.title}
         description={section.description}
         target={section.target}
         createdAt={section.createdAt}
         progress={section.progress || 0}
-      />
+      /> */}
 
       {/* Edit Button */}
       <div className="mt-6">
