@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { FieldConfig } from "@/types/fields";
-import { ContentModal } from "./modal/ContentModal";
-import { InfoModal } from "./modal/InfoModal";
+import { ContentModal } from "../modal/ContentModal";
+import { InfoModal } from "../modal/InfoModal";
 
 type HeaderShellProps = {
   title: string;
