@@ -41,7 +41,7 @@ export default async function SectionPage({
 
       {/* Phase List */}
       <div className="mt-12">
-        <PhaseList phases={phases} />
+        <PhaseList phases={phases} sectionId={sectionId} />
       </div>
     </LayoutShell>
   );

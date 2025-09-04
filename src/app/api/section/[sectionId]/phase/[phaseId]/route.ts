@@ -3,14 +3,20 @@ import { deletePhase, getPhaseById, updatePhase } from "@/lib/db/phases";
 import { Phase } from "@/types";
 import { NextRequest } from "next/server";
 
+interface ParamsPromiseType {
+  params: {
+    sectionId: string;
+    phaseId: string;
+  };
+}
+
 export async function GET(
   req: NextRequest,
-  { params }: { params: { sectionId: string; phaseId: string } }
+  { params }: ParamsPromiseType
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = params.sectionId;
-  const phaseId = params.phaseId;
+  const { sectionId, phaseId } = params;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);
@@ -25,12 +31,11 @@ export async function GET(
 }
 
 export async function PATCH(req: NextRequest,
-  { params }: { params: { sectionId: string; phaseId: string } }
+  { params }: ParamsPromiseType
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = params.sectionId;
-  const phaseId = params.phaseId;
+  const { sectionId, phaseId } = params;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);
@@ -56,12 +61,11 @@ export async function PATCH(req: NextRequest,
 
 export async function DELETE(
   req: NextRequest,
- { params }: { params: { sectionId: string; phaseId: string } }
+ { params }: ParamsPromiseType
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = params.sectionId;
-  const phaseId = params.phaseId;
+  const { sectionId, phaseId } = params;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);

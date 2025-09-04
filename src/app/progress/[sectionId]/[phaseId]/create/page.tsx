@@ -1,7 +1,7 @@
 // app/progress/[sectionId]/[phaseId]/create/page.tsx
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,13 +15,16 @@ import { useAuth } from "@/context/AuthContext";
 export default function CreateTopicPage({
   params,
 }: {
-  params: { sectionId: string; phaseId: string };
+  params: Promise<{ sectionId: string; phaseId: string }>;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user } = useAuth();
   const userId = user?.uid || "";
+
+  const resolvedParams = React.use(params);
+  const { sectionId, phaseId } = resolvedParams;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,14 +44,14 @@ export default function CreateTopicPage({
     try {
       const data = await createTopicAPI({
         userId,
-        sectionId: params.sectionId,
-        phaseId: params.phaseId,
+        sectionId,
+        phaseId,
         title,
         description,
       });
 
       if (data?.success && data.data?.topicId) {
-        router.push(`/progress/${params.sectionId}/${params.phaseId}`);
+        router.push(`/progress/${sectionId}/${phaseId}`);
         router.refresh();
       } else {
         setError(data?.message || "Failed to create topic");
@@ -103,7 +106,7 @@ export default function CreateTopicPage({
                 {loading ? "Creating..." : "Create Topic"}
               </Button>
               <Button asChild variant="outline">
-                <Link href={`/progress/${params.sectionId}/${params.phaseId}`}>
+                <Link href={`/progress/${sectionId}/${phaseId}`}>
                   Cancel
                 </Link>
               </Button>

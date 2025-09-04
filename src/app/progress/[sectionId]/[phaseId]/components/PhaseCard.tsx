@@ -1,70 +1,54 @@
-
-import Link from "next/link";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen } from "lucide-react";
+// app/progress/[sectionId]/components/PhaseCard.tsx
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Phase } from "@/types";
 
-type Props = {
-  phase: {
-    id: string;
-    title: string;
-    type: "Learn" | "Practice" | "Project";
-    description?: string;
-    progress: number;
-    createdAt: Date | string | number;
-  };
+type PhaseCardProps = {
+  phase: Phase;
   sectionId: string;
 };
 
-export function PhaseCard({ phase, sectionId }: Props) {
+export function PhaseCard({ phase, sectionId }: PhaseCardProps) {
   const createdAt = new Date(phase.createdAt).toLocaleDateString();
 
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">{phase.title}</CardTitle>
-          <Badge
-            variant={
-              phase.type === "Learn"
-                ? "default"
-                : phase.type === "Practice"
-                ? "secondary"
-                : "destructive"
-            }
-          >
-            {phase.type}
-          </Badge>
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <CardTitle className="text-3xl">{phase.title}</CardTitle>
+            <CardDescription className="mt-2">
+              Type: <strong>{phase.type}</strong> • Created on {createdAt}
+            </CardDescription>
+          </div>
+          <Button asChild variant="outline" className="shrink-0">
+            <Link href={`/progress/${sectionId}/${phase.id}/edit`}>Edit Phase</Link>
+          </Button>
         </div>
-        <CardDescription>Created on {createdAt}</CardDescription>
       </CardHeader>
 
       <CardContent>
         {phase.description && (
-          <p className="text-sm text-foreground mb-3 leading-relaxed">
+          <p className="text-foreground leading-relaxed mb-6">
             {phase.description}
           </p>
         )}
-        <div className="w-full bg-muted rounded-full h-2">
-          <div
-            className="bg-primary h-2 rounded-full transition-all"
-            style={{ width: `${phase.progress}%` }}
-          ></div>
-        </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          {phase.progress}% Complete
-        </p>
-      </CardContent>
 
-      <CardFooter>
-        <Button asChild variant="outline" className="w-full">
-          <Link href={`/progress/${sectionId}/${phase.id}`}>
-            <BookOpen className="h-4 w-4 mr-2" />
-            View Phase
-          </Link>
-        </Button>
-      </CardFooter>
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>Progress</span>
+            <span>{phase.progress}%</span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-2">
+            <div
+              className="bg-primary h-2 rounded-full"
+              style={{ width: `${phase.progress}%` }}
+            ></div>
+          </div>
+        </div>
+      </CardContent>
     </Card>
   );
 }

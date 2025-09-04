@@ -3,15 +3,21 @@ import { deleteTopic, getTopicById, updateTopic } from "@/lib/db/topics";
 import { Topic } from "@/types";
 import { NextRequest } from "next/server";
 
+interface ParamsPromiseType {
+  params: {
+    sectionId: string;
+    phaseId: string;
+    topicId: string;
+  };
+}
+
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: ParamsPromiseType
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
-  const phaseId = searchParams.get("phaseId");
-  const topicId = params.id;
+  const { sectionId, phaseId, topicId } = params;
 
   if (!userId || !sectionId || !phaseId || !topicId)
     return errorResponse(
@@ -20,20 +26,18 @@ export async function GET(
     );
 
   try {
-    const section = await getTopicById(userId, sectionId, phaseId, topicId);
-    if (!section) return errorResponse("Topic not found", 404);
-    return successResponse({ section }, "Topic fetched", 200);
+    const topic = await getTopicById(userId, sectionId, phaseId, topicId);
+    if (!topic) return errorResponse("Topic not found", 404);
+    return successResponse({ topic }, "Topic fetched", 200);
   } catch (error) {
     return errorResponse("Failed to fetch topic", 500, error);
   }
 }
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
-  const phaseId = searchParams.get("phaseId");
-  const topicId = searchParams.get("topicId");
+  const { sectionId, phaseId, topicId } = params;
 
   if (!userId || !sectionId || !phaseId || !topicId)
     return errorResponse(
@@ -57,12 +61,15 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE(
+  req: NextRequest,
+  {
+    params,
+  }: ParamsPromiseType
+) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
-  const phaseId = searchParams.get("phaseId");
-  const topicId = searchParams.get("topicId");
+  const { sectionId, phaseId, topicId } = params;
 
   if (!userId || !sectionId || !phaseId || !topicId)
     return errorResponse(

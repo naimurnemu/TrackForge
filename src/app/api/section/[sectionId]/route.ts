@@ -6,13 +6,19 @@ import {
 } from "@/lib/db/sections";
 import { NextRequest } from "next/server";
 
+interface ParamsPromiseType {
+  params: {
+    sectionId: string;
+  };
+}
+
 export async function GET(
   req: NextRequest,
-  { params }: { params: { sectionId: string } }
+  { params }: ParamsPromiseType
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = params.sectionId;
+  const { sectionId } = params;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);
@@ -26,10 +32,10 @@ export async function GET(
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { sectionId: string } }) {
+export async function PUT(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = params.sectionId;
+  const { sectionId } = params;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);
@@ -54,11 +60,11 @@ export async function PUT(req: NextRequest, { params }: { params: { sectionId: s
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { sectionId: string } }
+  { params }: ParamsPromiseType
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = params.sectionId;
+  const { sectionId } = params;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);

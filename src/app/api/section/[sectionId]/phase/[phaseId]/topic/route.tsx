@@ -2,11 +2,17 @@ import { errorResponse, successResponse } from "@/lib/api/response";
 import { getTopicsByPhase } from "@/lib/db/topics";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest) {
+interface ParamsPromiseType {
+  params: {
+    sectionId: string;
+    phaseId: string;
+  };
+}
+
+export async function GET(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
-  const phaseId = searchParams.get("phaseId");
+  const { sectionId, phaseId } = params;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId or topicId", 400);

@@ -2,9 +2,14 @@ import { errorResponse, successResponse } from "@/lib/api/response";
 import { CreatePhase } from "@/lib/db/phases";
 import { NextRequest } from "next/server";
 
+interface ParamsPromiseType {
+  params: {
+    sectionId: string;
+  };
+}
 
-export async function POST(req: NextRequest, { params }: { params: { sectionId: string } }) {
-  const sectionId = params.sectionId;
+export async function POST(req: NextRequest, { params }: ParamsPromiseType) {
+  const { sectionId } = params;
   try {
     const { userId, title, description, type } = await req.json();
 

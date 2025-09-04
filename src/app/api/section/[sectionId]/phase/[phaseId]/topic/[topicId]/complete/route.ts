@@ -2,12 +2,18 @@ import { errorResponse, successResponse } from "@/lib/api/response";
 import { completeTopic } from "@/lib/db/topics";
 import { NextRequest } from "next/server";
 
-export async function PATCH(req: NextRequest) {
+interface ParamsPromiseType {
+  params: {
+    sectionId: string;
+    phaseId: string;
+    topicId: string;
+  };
+}
+
+export async function PATCH(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const sectionId = searchParams.get("sectionId");
-  const phaseId = searchParams.get("phaseId");
-  const topicId = searchParams.get("topicId");
+  const { sectionId, phaseId, topicId } = params;
 
   if (!userId || !sectionId || !phaseId || !topicId)
     return errorResponse(

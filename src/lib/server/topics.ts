@@ -10,12 +10,13 @@ export async function getTopicsByPhaseIdAPI(
       `${API_URL}/section/${sectionId}/phase/${phaseId}/topic?userId=${userId}`,
       {
         method: "GET",
+        headers: { "Content-Type": "application/json" },
         cache: "no-store",
       }
     );
 
     const data = await res.json();
-    return data.data?.topics ?? [];
+    return data.data?.topic ?? [];
   } catch (err) {
     console.error("getTopicsByPhaseIdAPI error:", err);
     return [];
@@ -33,11 +34,13 @@ export async function getTopicByIdAPI(
       `${API_URL}/section/${sectionId}/phase/${phaseId}/topic/${topicId}?userId=${userId}`,
       {
         method: "GET",
+        headers: { "Content-Type": "application/json" },
         cache: "no-store",
       }
     );
 
     const data = await res.json();
+    console.log("getTopicsByPhaseIdAPI data:", data);
     return data.data?.topic ?? null;
   } catch (err) {
     console.error("getTopicByIdAPI error:", err);
@@ -114,7 +117,7 @@ export async function completeTopicAPI(
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ summary, timeSpentMinutes }),
+        body: JSON.stringify({ userId, summary, timeSpentMinutes }),
       }
     );
 
