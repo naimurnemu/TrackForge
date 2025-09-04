@@ -1,4 +1,4 @@
-import { LayoutShell } from "./components/LayoutShell";
+import { LayoutShell } from "../../components/common/LayoutShell";
 import { SectionCard } from "./components/SectionCard";
 import { getUserSectionsAPI } from "@/lib/server/sections";
 import { getCurrentUser } from "@/lib/server/auth";

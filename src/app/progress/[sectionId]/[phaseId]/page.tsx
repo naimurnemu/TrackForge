@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getPhaseByIdAPI } from "@/lib/server/phases";
 import { getTopicsByPhaseIdAPI } from "@/lib/server/topics";
 import { getCurrentUser } from "@/lib/server/auth";
-import { LayoutShell } from "@/app/progress/components/LayoutShell";
+import { LayoutShell } from "@/components/common/LayoutShell";
 import { TopicList } from "./components/TopicList";
 import { PhaseCard } from "./components/PhaseCard";
 

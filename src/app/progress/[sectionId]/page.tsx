@@ -6,7 +6,7 @@ import { getPhasesBySectionIdAPI } from "@/lib/server/phases";
 import { PhaseList } from "./components/PhaseList";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { LayoutShell } from "@/app/progress/components/LayoutShell";
+import { LayoutShell } from "@/components/common/LayoutShell";
 
 export default async function SectionPage({
   params,

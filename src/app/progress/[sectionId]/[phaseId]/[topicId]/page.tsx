@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import { getTopicByIdAPI } from "@/lib/server/topics";
 import { getCurrentUser } from "@/lib/server/auth";
-import { LayoutShell } from "@/app/progress/components/LayoutShell";
+import { LayoutShell } from "@/components/common/LayoutShell";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
