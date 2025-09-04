@@ -4,11 +4,11 @@ import { Topic } from "@/types";
 import { NextRequest } from "next/server";
 
 interface ParamsPromiseType {
-  params: {
+  params: Promise<{
     sectionId: string;
     phaseId: string;
     topicId: string;
-  };
+  }>;
 }
 
 export async function GET(
@@ -17,7 +17,7 @@ export async function GET(
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId, phaseId, topicId } = params;
+  const { sectionId, phaseId, topicId } = await params;
 
   if (!userId || !sectionId || !phaseId || !topicId)
     return errorResponse(
@@ -37,7 +37,7 @@ export async function GET(
 export async function PATCH(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId, phaseId, topicId } = params;
+  const { sectionId, phaseId, topicId } = await params;
 
   if (!userId || !sectionId || !phaseId || !topicId)
     return errorResponse(
@@ -69,7 +69,7 @@ export async function DELETE(
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId, phaseId, topicId } = params;
+  const { sectionId, phaseId, topicId } = await params;
 
   if (!userId || !sectionId || !phaseId || !topicId)
     return errorResponse(

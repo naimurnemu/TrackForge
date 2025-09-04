@@ -7,9 +7,9 @@ import {
 import { NextRequest } from "next/server";
 
 interface ParamsPromiseType {
-  params: {
+  params: Promise<{
     sectionId: string;
-  };
+  }>;
 }
 
 export async function GET(
@@ -18,7 +18,7 @@ export async function GET(
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId } = params;
+  const { sectionId } = await params;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);
@@ -35,7 +35,7 @@ export async function GET(
 export async function PUT(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId } = params;
+  const { sectionId } = await params;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);
@@ -64,7 +64,7 @@ export async function DELETE(
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId } = params;
+  const { sectionId } = await params;
 
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);

@@ -3,16 +3,16 @@ import { getTopicsByPhase } from "@/lib/db/topics";
 import { NextRequest } from "next/server";
 
 interface ParamsPromiseType {
-  params: {
+  params: Promise<{
     sectionId: string;
     phaseId: string;
-  };
+  }>;
 }
 
 export async function GET(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId, phaseId } = params;
+  const { sectionId, phaseId } = await params;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId or topicId", 400);
@@ -24,5 +24,4 @@ export async function GET(req: NextRequest, { params }: ParamsPromiseType) {
   }catch (error) {
     return errorResponse("Failed to fetch topic", 500, error);
   }
-  
 }

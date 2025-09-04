@@ -3,13 +3,13 @@ import { CreatePhase } from "@/lib/db/phases";
 import { NextRequest } from "next/server";
 
 interface ParamsPromiseType {
-  params: {
+  params: Promise<{
     sectionId: string;
-  };
+  }>;
 }
 
 export async function POST(req: NextRequest, { params }: ParamsPromiseType) {
-  const { sectionId } = params;
+  const { sectionId } = await params;
   try {
     const { userId, title, description, type } = await req.json();
 

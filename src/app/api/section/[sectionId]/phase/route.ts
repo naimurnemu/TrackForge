@@ -3,15 +3,15 @@ import { errorResponse, successResponse } from "@/lib/api/response";
 import { getPhasesBySection } from "@/lib/db/phases";
 
 interface ParamsPromiseType {
-  params: {
+  params: Promise<{
     sectionId: string;
-  };
+  }>;
 }
 
 export async function GET(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId } = params;
+  const { sectionId } = await params;
   if (!userId || !sectionId)
     return errorResponse("Missing userId or sectionId", 400);
 

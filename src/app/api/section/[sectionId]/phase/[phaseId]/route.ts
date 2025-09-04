@@ -4,10 +4,10 @@ import { Phase } from "@/types";
 import { NextRequest } from "next/server";
 
 interface ParamsPromiseType {
-  params: {
+  params: Promise<{
     sectionId: string;
     phaseId: string;
-  };
+  }>;
 }
 
 export async function GET(
@@ -16,7 +16,7 @@ export async function GET(
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId, phaseId } = params;
+  const { sectionId, phaseId } = await params;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);
@@ -35,7 +35,7 @@ export async function PATCH(req: NextRequest,
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId, phaseId } = params;
+  const { sectionId, phaseId } = await params;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);
@@ -65,7 +65,7 @@ export async function DELETE(
 ) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const { sectionId, phaseId } = params;
+  const { sectionId, phaseId } = await params;
 
   if (!userId || !sectionId || !phaseId)
     return errorResponse("Missing userId or sectionId or phaseId", 400);

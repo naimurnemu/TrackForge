@@ -3,17 +3,17 @@ import { createTopic } from "@/lib/db/topics";
 import { NextRequest } from "next/server";
 
 interface ParamsPromiseType {
-  params: {
+  params: Promise<{
     sectionId: string;
     phaseId: string;
-  };
+  }>;
 }
 
 export async function POST(
   req: NextRequest,
   { params }: ParamsPromiseType
 ) {
-  const { sectionId, phaseId } = params;
+  const { sectionId, phaseId } = await params;
 
   try {
     const { userId, title, description } = await req.json();

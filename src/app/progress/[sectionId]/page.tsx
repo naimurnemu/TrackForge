@@ -11,12 +11,12 @@ import { LayoutShell } from "@/app/progress/components/LayoutShell";
 export default async function SectionPage({
   params,
 }: {
-  params: { sectionId: string };
+  params: Promise<{ sectionId: string }>;
 }) {
   const user = await getCurrentUser();
   if (!user) return <div className="container p-8">Not authenticated</div>;
 
-  const sectionId = params.sectionId;
+  const { sectionId } = await params;
 
   const section = await getSectionByIdAPI(user.uid, sectionId);
   if (!section) return notFound();
