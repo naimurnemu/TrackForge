@@ -1,3 +1,5 @@
+import { PhaseType } from "@/types";
+
 const API_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 export async function getPhasesBySectionIdAPI(
@@ -47,7 +49,7 @@ export async function createPhaseAPI(payload: {
   userId: string;
   sectionId: string;
   title: string;
-  type: "Learn" | "Practice" | "Project";
+  type: PhaseType;
   description?: string;
 }) {
   try {

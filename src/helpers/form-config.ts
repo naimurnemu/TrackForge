@@ -55,6 +55,6 @@ export const phaseFormConfig: FieldConfig[] = [
     placeholder: "Write a short description",
     minLength: 3,
     maxLength: 500,
-    required: false,
+    required: true,
   },
 ];

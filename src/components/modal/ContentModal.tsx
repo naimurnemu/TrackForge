@@ -110,6 +110,7 @@ export function ContentModal({
                       placeholder={field.placeholder}
                       onChange={(event) => handleChange(field.name, event.target.value)}
                       autoComplete="off"
+                      className="w-full break-words"
                     />
                     {error && (
                       <p className="text-sm text-destructive">
@@ -126,12 +127,12 @@ export function ContentModal({
                       {field.label}
                     </Label>
                     <Textarea
-                      className="resize-none"
                       id={field.name}
                       defaultValue={value ?? ""}
                       placeholder={field.placeholder}
                       onChange={(event) => handleChange(field.name, event.target.value)}
                       rows={6}
+                      className="w-full resize-none break-words whitespace-pre-wrap" 
                     />
                     <div className="flex justify-end text-xs text-muted-foreground">
                       <span>{(value?.length || 0)} {field.maxLength ? `/ ${field.maxLength}` : ""}</span>

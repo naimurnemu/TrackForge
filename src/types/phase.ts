@@ -1,4 +1,4 @@
-export type PhaseType = "Learn" | "Practice" | "Assessment" | "Project";
+export type PhaseType = "Learn" | "Practice" | "Assessment";
 
 export type Phase = {
   id: string;

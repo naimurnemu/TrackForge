@@ -28,11 +28,9 @@ export default function SectionList({ sections }: SectionListProps) {
         <p className="text-muted-foreground mb-6">
           Start by creating your first learning section.
         </p>
-        <Button asChild>
-          <Link href="/progress/create">
-            <FilePlus2 className="h-4 w-4 mr-2" />
-            Create Your First Section
-          </Link>
+        <Button variant="ghost">
+          <FilePlus2 className="h-4 w-4 mr-2" />
+          Create Your First Section
         </Button>
       </div>
     );
@@ -71,7 +69,7 @@ export default function SectionList({ sections }: SectionListProps) {
             <Button asChild variant="default" className="w-full">
               <Link href={`/progress/${section.id}`}>
                 <BookOpen className="h-4 w-4 mr-2" />
-                Open 
+                Open
               </Link>
             </Button>
           </CardFooter>
