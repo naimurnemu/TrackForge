@@ -8,18 +8,22 @@ import { ContentModal } from "../modal/ContentModal";
 import { InfoModal } from "../modal/InfoModal";
 
 type HeaderShellProps = {
+  shellName: string
   title: string;
   subtitle?: string;
   createdAt?: Date | string | number;
   createConfig?: FieldConfig[];
   editConfig?: FieldConfig[];
+  completeConfig?: FieldConfig[];
   defaultValues?: Record<string, any>;
   onCreate?: (values: Record<string, any>) => void;
   onEdit?: (values: Record<string, any>) => void;
+  onComplete?: (values: Record<string, any>) => void;
   onDelete?: () => void;
 };
 
 export default function HeaderShell({
+  shellName,
   title,
   subtitle,
   createdAt,
@@ -28,6 +32,7 @@ export default function HeaderShell({
   defaultValues = {},
   onCreate,
   onEdit,
+  onComplete,
   onDelete,
 }: HeaderShellProps) {
   const [modal, setModal] = useState<null | "create" | "edit" | "delete">(null);
@@ -48,18 +53,11 @@ export default function HeaderShell({
         <div className="flex gap-2">
           {onCreate && (
             <Button onClick={() => setModal("create")}>
-              <Plus className="h-4 w-4 mr-2" />Add
-            </Button>
+              <Plus className="h-4 w-4 mr-2" /> Create {shellName}</Button>
           )}
-          {onEdit && (
-            <Button variant="outline" onClick={() => setModal("edit")}>
-              <Pencil className="h-4 w-4 mr-2" /> Edit
-            </Button>
-          )}
-          {onDelete && (
-            <Button variant="destructive" onClick={() => setModal("delete")}>
-              <Trash2 className="h-4 w-4 mr-2" /> Delete
-            </Button>
+          {onComplete && (
+            <Button onClick={onComplete}>
+              <Plus className="h-4 w-4 mr-2" /> Complete {shellName}</Button>
           )}
         </div>
       </div>

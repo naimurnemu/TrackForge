@@ -41,7 +41,7 @@ export default function SectionList({ sections }: SectionListProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {sections.map((section) => (
-        <Card key={section.id} className="flex flex-col h-full">
+        <Card key={section.id} className="flex flex-col h-full gap-3">
           <CardHeader>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Folder className="h-4 w-4" />
@@ -60,11 +60,11 @@ export default function SectionList({ sections }: SectionListProps) {
                 {section.target}
               </p>
             )}
-            {section.description && (
+            {section.description?.length ? (
               <p className="text-sm text-foreground leading-relaxed">
                 {section.description}
               </p>
-            )}
+            ) : null}
           </CardContent>
 
           <CardFooter>

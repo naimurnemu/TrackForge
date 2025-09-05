@@ -1,6 +1,5 @@
 import { adminAuth } from "@/lib/firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,7 +30,7 @@ export async function POST(req: NextRequest) {
     });
 
     return response;
-  } catch (err) {
-    return NextResponse.json({ error: "Auth failed" }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: "Auth failed", error }, { status: 500 }, );
   }
 }

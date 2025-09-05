@@ -1,45 +1,59 @@
-// import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-// import { Badge } from "@/components/ui/badge";
+"use client";
 
-// type Props = {
-//   title: string;
-//   description?: string;
-//   target?: string;
-//   createdAt: Date | string | number;
-//   progress?: number; 
-// };
+import HeaderShell from "@/components/common/HeaderShell";
+import { phaseFormConfig, sectionForms } from "@/helpers/form-config";
+import { createSectionAPI } from "@/lib/server/sections";
+import { Section } from "@/types";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
-// export function SectionHeader({
-//   title,
-//   description,
-//   target,
-//   createdAt,
-//   progress = 0,
-// }: Props) {
-//   const date = new Date(createdAt).toLocaleDateString();
+interface ProgressHeaderProps {
+  shellName: string
+  userId: string;
+  section: Section
+}
 
-//   return (
-//     <div className="space-y-4">
-//       <div className="flex flex-wrap items-start justify-between gap-4">
-//         <div className="flex-1 min-w-0">
-//           <CardTitle className="text-3xl">{title}</CardTitle>
-//           <CardDescription className="mt-1">Created on {date}</CardDescription>
-//         </div>
-//         <Badge variant="secondary" className="shrink-0">
-//           {progress}% Complete
-//         </Badge>
-//       </div>
+export default function ProgressHeader({ userId, section, shellName }: ProgressHeaderProps) {
+  const router  = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
-//       {description && (
-//         <p className="text-foreground leading-relaxed">{description}</p>
-//       )}
+  const handleSubmit = async (values: { title: string; description: string; target: string }) => {
+    setError(null);
 
-//       {target && (
-//         <p className="text-sm">
-//           <span className="text-muted-foreground">🎯 Target: </span>
-//           {target}
-//         </p>
-//       )}
-//     </div>
-//   );
-// }
+    try {
+      const data = await createSectionAPI({ ...values, userId });
+
+      if (data?.data?.sectionId) {
+        toast.success(`Successfully created ${values.title}`, {
+          description: values.title,
+          closeButton: true,
+        })
+        router.refresh();
+      } else {
+        setError(data?.message || "Failed to create section");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      toast.error(err instanceof Error ? err.message : "An unknown error occurred");
+    } 
+  };
+
+  return (
+    <>
+      <HeaderShell
+        shellName={shellName}
+        createConfig={phaseFormConfig}
+        title={section.title}
+        subtitle={section.target}
+        defaultValues={section}
+        editConfig={sectionForms}
+        onEdit={(values) => handleSubmit(values)}
+        onCreate={(values) => handleSubmit(values)}
+        onDelete={() => {}}
+      />
+
+      {error && <p className="text-red-500">{error}</p>}
+    </>
+  );
+}

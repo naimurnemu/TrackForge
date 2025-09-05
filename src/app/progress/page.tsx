@@ -2,7 +2,7 @@ import { getUserSectionsAPI } from "@/lib/server/sections";
 import { getCurrentUser } from "@/lib/server/auth";
 import { Section } from "@/types/section";
 import SectionList from "./components/SectionList";
-import SectionHeader from "./components/SectionHeader";
+import ProgressHeader from "./components/ProgressHeader";
 
 
 export default async function ProgressPage() {
@@ -13,7 +13,7 @@ export default async function ProgressPage() {
 
   return (
     <div className="container mx-auto px-6 py-8 space-y-8">
-      <SectionHeader userId={user.uid} />
+      <ProgressHeader shellName="Section" userId={user.uid} />
       <SectionList sections={sections} />
     </div>
   );

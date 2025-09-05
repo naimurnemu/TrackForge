@@ -29,3 +29,32 @@ export const sectionForms: FieldConfig[] = [
     required: false,
   },
 ];
+
+export const phaseFormConfig: FieldConfig[] = [
+  {
+    type: "text",
+    name: "title",
+    label: "Title",
+    placeholder: "Enter phase title",
+    minLength: 3,
+    maxLength: 100,
+    required: true,
+  },
+  {
+    type: "select",
+    name: "type",
+    label: "Phase Type",
+    placeholder: "Select phase type",
+    options: ["Learn", "Practice", "Assessment"], 
+    required: true,
+  },
+  {
+    type: "textarea",
+    name: "description",
+    label: "Description",
+    placeholder: "Write a short description",
+    minLength: 3,
+    maxLength: 500,
+    required: false,
+  },
+];

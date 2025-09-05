@@ -5,8 +5,9 @@ import { getCurrentUser } from "@/lib/server/auth";
 import { getPhasesBySectionIdAPI } from "@/lib/server/phases";
 import { PhaseList } from "./components/PhaseList";
 import { Button } from "@/components/ui/button";
+import SectionHeader from "./components/SectionHeader";
 import Link from "next/link";
-import { LayoutShell } from "@/components/common/LayoutShell";
+
 
 export default async function SectionPage({
   params,
@@ -16,33 +17,18 @@ export default async function SectionPage({
   const user = await getCurrentUser();
   if (!user) return <div className="container p-8">Not authenticated</div>;
 
+  const userId = user.uid;
   const { sectionId } = await params;
 
-  const section = await getSectionByIdAPI(user.uid, sectionId);
+  const section = await getSectionByIdAPI(userId, sectionId);
   if (!section) return notFound();
 
   const phases = await getPhasesBySectionIdAPI(user.uid, sectionId);
 
   return (
-    <LayoutShell
-      title={section.title}
-      subtitle="Manage phases and track your learning progress"
-      showCreateButton
-      createHref={`/progress/${section.id}/create`}
-      createLabel="New Phase"
-      createdAt={section.createdAt}
-    >
-      {/* Edit Section Button */}
-      <div className="mt-6">
-        <Button asChild variant="outline" size="sm">
-          <Link href={`/progress/${section.id}/edit`}>Edit Section</Link>
-        </Button>
-      </div>
-
-      {/* Phase List */}
-      <div className="mt-12">
-        <PhaseList phases={phases} sectionId={sectionId} />
-      </div>
-    </LayoutShell>
+    <div className="container mx-auto px-6 py-8 space-y-8">
+      <SectionHeader shellName="Phase" section={section} userId={userId} />
+      <PhaseList phases={phases} sectionId={sectionId} />
+    </div>
   );
 }

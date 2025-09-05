@@ -1,28 +1,24 @@
-// app/progress/[sectionId]/components/PhaseList.tsx
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Phase } from "@/types";
 
-type Phase = {
-  id: string;
-  title: string;
-  description?: string | null;
-  type: "Learn" | "Practice" | "Project";
-  progress: number; // 0-100
-  createdAt: Date | string | number;
-};
-
-type Props = {
+type PhaseListProps = {
   phases: Phase[];
-  sectionId: string; // Required to build correct routes
+  sectionId: string;
 };
 
-export function PhaseList({ phases, sectionId }: Props) {
+export function PhaseList({ phases, sectionId }: PhaseListProps) {
   const hasPhases = phases.length > 0;
 
-  // Sort by creation date or keep insertion order
-  const sortedPhases = phases.sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  const sortedPhases = [...phases].sort(
+    (a, b) =>
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
 
   return (
@@ -31,14 +27,17 @@ export function PhaseList({ phases, sectionId }: Props) {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Phases</h2>
         <span className="text-sm text-muted-foreground">
-          {hasPhases ? `Found ${phases.length} phase(s)` : "No phases yet"}
+          {hasPhases
+            ? `Found ${phases.length} phase${phases.length > 1 ? "s" : ""}`
+            : "No phases yet"}
         </span>
       </div>
 
-      {/* Empty State */}
+      {/* No Phases State */}
       {!hasPhases ? (
         <Card className="border-2 border-dashed text-center py-12">
           <CardHeader>
+            {/* Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-10 w-10 mx-auto text-muted-foreground opacity-50"
@@ -53,7 +52,11 @@ export function PhaseList({ phases, sectionId }: Props) {
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
               />
             </svg>
-            <CardTitle className="text-base mt-4">No phases created yet</CardTitle>
+
+            {/* Text */}
+            <CardTitle className="text-base mt-4">
+              No phases created yet
+            </CardTitle>
             <CardDescription className="mt-2">
               Start building your learning path.
               <br />
@@ -67,12 +70,13 @@ export function PhaseList({ phases, sectionId }: Props) {
           </CardHeader>
         </Card>
       ) : (
-        /* Phase Grid */
+        /* Render phases */
         <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
           {sortedPhases.map((phase) => (
             <Card key={phase.id}>
               <CardHeader>
                 <div className="flex items-start justify-between">
+                  {/* Title + Description */}
                   <div className="space-y-1 flex-1">
                     <CardTitle>
                       <Link
@@ -86,8 +90,9 @@ export function PhaseList({ phases, sectionId }: Props) {
                       {phase.description || "No description provided."}
                     </CardDescription>
                   </div>
+
+                  {/* Type + Progress */}
                   <div className="flex flex-col items-end gap-2 ml-4">
-                    {/* Type Badge */}
                     <Badge
                       variant={
                         phase.type === "Learn"
@@ -99,8 +104,6 @@ export function PhaseList({ phases, sectionId }: Props) {
                     >
                       {phase.type}
                     </Badge>
-
-                    {/* Progress */}
                     <div className="text-xs text-right">
                       <span className="font-medium">{phase.progress}%</span>{" "}
                       <span className="text-muted-foreground">complete</span>

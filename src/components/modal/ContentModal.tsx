@@ -194,8 +194,11 @@ export function ContentModal({
               case "select":
                 return (
                   <div className="space-y-1" key={field.name}>
+                    <Label htmlFor={field.name}>
+                      {field.label}
+                    </Label>
                     <Select onValueChange={(value) => handleChange(field.name, value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder={field.placeholder} />
                       </SelectTrigger>
                       <SelectContent>
@@ -206,9 +209,6 @@ export function ContentModal({
                         ))}
                       </SelectContent>
                     </Select>
-                    <Label htmlFor={field.name}>
-                      {field.label}
-                    </Label>
                     {error && (
                       <p className="text-sm text-destructive">
                         {error}

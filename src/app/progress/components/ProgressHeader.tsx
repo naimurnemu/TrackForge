@@ -7,11 +7,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface SectionHeaderProps {
+interface ProgressHeaderProps {
+  shellName: string;
   userId: string;
 }
 
-export default function SectionHeader({ userId }: SectionHeaderProps) {
+export default function ProgressHeader({ userId, shellName }: ProgressHeaderProps) {
   const router  = useRouter();
   const [error, setError] = useState<string | null>(null);
 
@@ -39,6 +40,7 @@ export default function SectionHeader({ userId }: SectionHeaderProps) {
   return (
     <>
       <HeaderShell
+        shellName={shellName}
         createConfig={sectionForms}
         title="Your Learning Journey"
         subtitle="Stay organized and see how far you’ve come."
