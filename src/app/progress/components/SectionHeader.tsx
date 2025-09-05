@@ -3,38 +3,49 @@
 import HeaderShell from "@/components/common/HeaderShell";
 import { sectionForms } from "@/helpers/form-config";
 import { createSectionAPI } from "@/lib/server/sections";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-// import { useRouter } from "next/router";
+import { toast } from "sonner";
 
+interface SectionHeaderProps {
+  userId: string;
+}
 
-export default function SectionHeader() {
-  // const { router } = useRouter();
-  const [loading, setLoading] = useState(false);
+export default function SectionHeader({ userId }: SectionHeaderProps) {
+  const router  = useRouter();
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (values: Record<string, unknown>) => {
-    setLoading(true);
+  const handleSubmit = async (values: { title: string; description: string; target: string }) => {
     setError(null);
 
     try {
       const data = await createSectionAPI({ ...values, userId });
 
       if (data?.data?.sectionId) {
-        // router.push("/progress");
+        toast.success(`Successfully created ${values.title}`, {
+          description: values.title,
+          closeButton: true,
+        })
+        router.refresh();
+      } else {
+        setError(data?.message || "Failed to create section");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
-    } finally {
-      setLoading(false);
-    }
+      toast.error(err instanceof Error ? err.message : "An unknown error occurred");
+    } 
   };
 
   return (
-    <HeaderShell
-      createConfig={sectionForms}
-      title="Learning Progress"
-      subtitle="Manage your learning sections and track growth"
-      onCreate={(values) => handleSubmit(values)}
-    />
+    <>
+      <HeaderShell
+        createConfig={sectionForms}
+        title="Your Learning Journey"
+        subtitle="Stay organized and see how far you’ve come."
+        onCreate={(values) => handleSubmit(values)}
+      />
+
+      {error && <p className="text-red-500">{error}</p>}
+    </>
   );
 }

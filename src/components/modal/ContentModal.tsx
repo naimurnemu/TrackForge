@@ -49,9 +49,9 @@ export function ContentModal({
     if (field.type === "text" || field.type === "textarea") {
       if (field.required && !value)
         return `${field.label} is required`;
-      if (field.minLength && value.length < field.minLength)
+      if (field.minLength && value?.length < field.minLength)
         return `${field.label} must be at least ${field.minLength} characters`;
-      if (field.maxLength && value.length > field.maxLength)
+      if (field.maxLength && value?.length > field.maxLength)
         return `${field.label} must be at most ${field.maxLength} characters`;
       if (field.pattern && !field.pattern.test(value))
         return `${field.label} is invalid`;
@@ -87,7 +87,7 @@ export function ContentModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-lg bg-white dark:bg-gray-800">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
@@ -109,9 +109,10 @@ export function ContentModal({
                       defaultValue={value ?? ""}
                       placeholder={field.placeholder}
                       onChange={(event) => handleChange(field.name, event.target.value)}
+                      autoComplete="off"
                     />
                     {error && (
-                      <p className="text-sm text-destructive text-red-500">
+                      <p className="text-sm text-destructive">
                         {error}
                       </p>
                     )}
@@ -130,10 +131,13 @@ export function ContentModal({
                       defaultValue={value ?? ""}
                       placeholder={field.placeholder}
                       onChange={(event) => handleChange(field.name, event.target.value)}
-                      rows={5}
+                      rows={6}
                     />
+                    <div className="flex justify-end text-xs text-muted-foreground">
+                      <span>{(value?.length || 0)} {field.maxLength ? `/ ${field.maxLength}` : ""}</span>
+                    </div>
                     {error && (
-                      <p className="text-sm text-destructive text-red-500">
+                      <p className="text-sm text-destructive">
                         {error}
                       </p>
                     )}
@@ -154,7 +158,7 @@ export function ContentModal({
                       {field.label}
                     </Label>
                     {error && (
-                      <p className="text-sm text-destructive text-red-500">
+                      <p className="text-sm text-destructive">
                         {error}
                       </p>
                     )}
@@ -180,7 +184,7 @@ export function ContentModal({
                       {field.label}
                     </Label>
                     {error && (
-                      <p className="text-sm text-destructive text-red-500">
+                      <p className="text-sm text-destructive">
                         {error}
                       </p>
                     )}
@@ -206,7 +210,7 @@ export function ContentModal({
                       {field.label}
                     </Label>
                     {error && (
-                      <p className="text-sm text-destructive text-red-500">
+                      <p className="text-sm text-destructive">
                         {error}
                       </p>
                     )}
@@ -222,7 +226,7 @@ export function ContentModal({
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button variant="" onClick={handleSubmit}>
+          <Button onClick={handleSubmit}>
             Save
           </Button>
         </DialogFooter>

@@ -13,7 +13,7 @@ export default async function ProgressPage() {
 
   return (
     <div className="container mx-auto px-6 py-8 space-y-8">
-      <SectionHeader />
+      <SectionHeader userId={user.uid} />
       <SectionList sections={sections} />
     </div>
   );

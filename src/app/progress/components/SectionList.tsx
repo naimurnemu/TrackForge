@@ -45,7 +45,7 @@ export default function SectionList({ sections }: SectionListProps) {
           <CardHeader>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Folder className="h-4 w-4" />
-              <span className="text-sm">Section</span>
+              <span className="text-sm">Objective</span>
             </div>
             <CardTitle className="text-xl">{section.title}</CardTitle>
             <CardDescription>
@@ -53,22 +53,16 @@ export default function SectionList({ sections }: SectionListProps) {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="flex-1 space-y-3">
-            {section.description && (
-              <p className="text-sm text-foreground leading-relaxed">
-                {section.description}
-              </p>
-            )}
+          <CardContent className="flex-1 space-y-2">
             {section.target && (
               <p className="text-sm">
                 <span className="text-muted-foreground">🎯 Target: </span>
                 {section.target}
               </p>
             )}
-            {typeof section.progress === "number" && (
-              <p className="text-sm">
-                <span className="text-muted-foreground">📊 Progress: </span>
-                {section.progress}%
+            {section.description && (
+              <p className="text-sm text-foreground leading-relaxed">
+                {section.description}
               </p>
             )}
           </CardContent>
@@ -77,7 +71,7 @@ export default function SectionList({ sections }: SectionListProps) {
             <Button asChild variant="default" className="w-full">
               <Link href={`/progress/${section.id}`}>
                 <BookOpen className="h-4 w-4 mr-2" />
-                Open Section
+                Open 
               </Link>
             </Button>
           </CardFooter>

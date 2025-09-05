@@ -48,7 +48,7 @@ export default function HeaderShell({
         <div className="flex gap-2">
           {onCreate && (
             <Button onClick={() => setModal("create")}>
-              <Plus className="h-4 w-4 mr-2" /> Add
+              <Plus className="h-4 w-4 mr-2" />Add
             </Button>
           )}
           {onEdit && (
@@ -69,8 +69,8 @@ export default function HeaderShell({
         <ContentModal
           open
           setOpen={() => setModal(null)}
-          title="Create"
-          description="Fill in the details"
+          title="Create New"
+          description="Fill in the details to create"
           fields={createConfig}
           onSubmit={onCreate!}
         />
@@ -81,7 +81,7 @@ export default function HeaderShell({
         <ContentModal
           open
           setOpen={() => setModal(null)}
-          title="Edit"
+          title="Update"
           description="Update the details"
           fields={editConfig}
           defaultValues={defaultValues}
