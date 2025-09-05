@@ -9,6 +9,7 @@ import {
   signOut as firebaseSignOut
 } from "firebase/auth";
 import { UserProfile } from "@/types";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -24,25 +25,37 @@ const AuthContext = createContext<AuthContextType>({
   logout: async () => { },
 });
 
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        const { uid, email, displayName, photoURL } = firebaseUser;
-        setUser({ uid, email, displayName, photoURL });
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
+      (async () => {
+        if (firebaseUser) {
+          const { uid, email, displayName, photoURL, metadata } = firebaseUser;
+          const token = await firebaseUser.getIdToken();
+          const createdAt = metadata?.creationTime ?? new Date().toISOString();
+          const lastLogin = metadata?.lastSignInTime ?? undefined;
+          setUser({
+            uid,
+            email: email ?? "",
+            displayName: displayName ?? "",
+            photoURL: photoURL ?? undefined,
+            createdAt,
+            lastLogin,
+            token,
+          });
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      })();
     });
 
     return () => unsubscribe();
   }, []);
-
 
   const login = async () => {
     const provider = new GoogleAuthProvider();
@@ -51,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const idToken = await user.getIdToken();
 
-    const res = await fetch("/api/auth/session", {
+    const res = await fetch("/api/auth/google", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idToken, expiresIn: 60 * 60 * 24 * 7 }),
@@ -60,11 +73,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!res.ok) {
       throw new Error("Failed to create session");
     }
+
+    router.push("/");
   };
 
   const logout = async () => {
     await firebaseSignOut(auth);
     await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
   };
 
   const value = {
@@ -81,7 +97,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Custom hook to use auth context
 export function useAuth() {
   return useContext(AuthContext);
 }
