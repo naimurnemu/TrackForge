@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Track Forge",
+  title: "TrackForge",
   description: "Make your daily progress easy to track",
 };
 

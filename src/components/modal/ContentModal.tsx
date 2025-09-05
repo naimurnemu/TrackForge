@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { FieldConfig } from "@/types/fields";
+import { FieldConfig } from "@/types";
 import { useState } from "react";
 
 interface ContentModalProps {
@@ -87,148 +87,146 @@ export function ContentModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-lg bg-white dark:bg-gray-800">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-      </DialogContent>
+        <div className="space-y-4">
+          {fields.map((field) => {
+            const error = errors[field.name];
+            const value = values[field.name];
 
-      <div className="space-y-4">
-        {fields.map((field) => {
-          const error = errors[field.name];
-          const value = values[field.name];
+            switch (field.type) {
+              case "text":
+                return (
+                  <div className="space-y-1" key={field.name}>
+                    <Label htmlFor={field.name}>
+                      {field.label}
+                    </Label>
+                    <Input
+                      id={field.name}
+                      defaultValue={value ?? ""}
+                      placeholder={field.placeholder}
+                      onChange={(event) => handleChange(field.name, event.target.value)}
+                    />
+                    {error && (
+                      <p className="text-sm text-destructive text-red-500">
+                        {error}
+                      </p>
+                    )}
+                  </div>
+                )
 
-          switch (field.type) {
-            case "text":
-              return (
-                <div key={field.name}>
-                  <Label htmlFor={field.name}>
-                    {field.label}
-                  </Label>
-                  <Input
-                    id={field.name}
-                    defaultValue={value ?? ""}
-                    placeholder={field.placeholder}
-                    onChange={(event) => handleChange(field.name, event.target.value)}
-                  />
-                  {error && (
-                    <p className="text-sm text-destructive text-red-500">
-                      {error}
-                    </p>
-                  )}
-                </div>
-              )
+              case "textarea":
+                return (
+                  <div className="space-y-1" key={field.name}>
+                    <Label htmlFor={field.name}>
+                      {field.label}
+                    </Label>
+                    <Textarea
+                      className="resize-none"
+                      id={field.name}
+                      defaultValue={value ?? ""}
+                      placeholder={field.placeholder}
+                      onChange={(event) => handleChange(field.name, event.target.value)}
+                      rows={5}
+                    />
+                    {error && (
+                      <p className="text-sm text-destructive text-red-500">
+                        {error}
+                      </p>
+                    )}
+                  </div>
+                )
 
-            case "textarea":
-              return (
-                <div key={field.name}>
-                  <Label htmlFor={field.name}>
-                    {field.label}
-                  </Label>
-                  <Textarea
-                    id={field.name}
-                    defaultValue={value ?? ""}
-                    placeholder={field.placeholder}
-                    onChange={(event) => handleChange(field.name, event.target.value)}
-                    rows={4}
-                  />
-                  {error && (
-                    <p className="text-sm text-destructive text-red-500">
-                      {error}
-                    </p>
-                  )}
-                </div>
-              )
+              case "checkbox":
+                return (
+                  <div className="space-x-2" key={field.name}>
+                    <Checkbox
+                      id={field.name}
+                      checked={value}
+                      onCheckedChange={(checked) =>
+                        handleChange(field.name, checked)
+                      }
+                    />
+                    <Label htmlFor={field.name}>
+                      {field.label}
+                    </Label>
+                    {error && (
+                      <p className="text-sm text-destructive text-red-500">
+                        {error}
+                      </p>
+                    )}
+                  </div>
+                )
 
-            case "checkbox":
-              return (
-                <div key={field.name}>
-                  <Checkbox
-                    id={field.name}
-                    checked={value}
-                    onCheckedChange={(checked) =>
-                      handleChange(field.name, checked)
-                    }
-                  />
-                  <Label htmlFor={field.name}>
-                    {field.label}
-                  </Label>
-                  {error && (
-                    <p className="text-sm text-destructive text-red-500">
-                      {error}
-                    </p>
-                  )}
-                </div>
-              )
+              case "radio":
+                return (
+                  <div className="space-y-1" key={field.name}>
+                    <RadioGroup value={value} onValueChange={(value) => handleChange(field.name, value)}>
+                      <div className="flex items-center space-x-2">
+                        {field.options.map((option) => (
+                          <div key={option} className="flex items-center space-x-2">
+                            <RadioGroupItem key={option} value={option} id={option} />
+                            <Label htmlFor={option}>
+                              {option}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </RadioGroup>
+                    <Label htmlFor={field.name}>
+                      {field.label}
+                    </Label>
+                    {error && (
+                      <p className="text-sm text-destructive text-red-500">
+                        {error}
+                      </p>
+                    )}
+                  </div>
+                )
 
-            case "radio":
-              return (
-                <div key={field.name}>
-                  <RadioGroup value={value} onValueChange={(value) => handleChange(field.name, value)}>
-                    <div className="flex items-center space-x-2">
-                      {field.options.map((option) => (
-                        <div key={option} className="flex items-center space-x-2">
-                          <RadioGroupItem key={option} value={option} id={option} />
-                          <Label htmlFor={option}>
+              case "select":
+                return (
+                  <div className="space-y-1" key={field.name}>
+                    <Select onValueChange={(value) => handleChange(field.name, value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={field.placeholder} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {field.options.map((option) => (
+                          <SelectItem key={option} value={option}>
                             {option}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </RadioGroup>
-                  <Label htmlFor={field.name}>
-                    {field.label}
-                  </Label>
-                  {error && (
-                    <p className="text-sm text-destructive text-red-500">
-                      {error}
-                    </p>
-                  )}
-                </div>
-              )
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Label htmlFor={field.name}>
+                      {field.label}
+                    </Label>
+                    {error && (
+                      <p className="text-sm text-destructive text-red-500">
+                        {error}
+                      </p>
+                    )}
+                  </div>
+                )
 
-            case "select":
-              return (
-                <div key={field.name}>
-                  <Select onValueChange={(value) => handleChange(field.name, value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={field.placeholder} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {field.options.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Label htmlFor={field.name}>
-                    {field.label}
-                  </Label>
-                  {error && (
-                    <p className="text-sm text-destructive text-red-500">
-                      {error}
-                    </p>
-                  )}
-                </div>
-              )
-
-            default:
-              return null
-          }
-
-        })}
-      </div>
-
-      <DialogFooter>
-        <Button variant="outline" onClick={() => setOpen(false)}>
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit}>
-          Save
-        </Button>
-      </DialogFooter>
+              default:
+                return null
+            }
+          })}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="" onClick={handleSubmit}>
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import { FieldConfig } from "@/types/fields";
+import { FieldConfig } from "@/types";
 import { ContentModal } from "../modal/ContentModal";
 import { InfoModal } from "../modal/InfoModal";
 
@@ -19,7 +19,7 @@ type HeaderShellProps = {
   onDelete?: () => void;
 };
 
-export function HeaderShell({
+export default function HeaderShell({
   title,
   subtitle,
   createdAt,
