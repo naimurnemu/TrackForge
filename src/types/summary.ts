@@ -1,10 +1,21 @@
-export interface Summary {
+import { Topic } from "./topic";
+
+export interface SummaryPhase {
   id: string;
-  userId: string;
-  sectionId: string;
-  phaseId: string;
-  topicId: string;
-  content: string;
-  timeSpentMinutes: number;
+  title: string;
+  description?: string;
   createdAt: string;
+  updatedAt: string;
+  topics: Topic[]
+  
+}
+
+export interface SummarySection {
+  id: string;
+  title: string;
+  description?: string;
+  target: string;
+  createdAt: string;
+  updatedAt: string;
+  phases: SummaryPhase[];
 }

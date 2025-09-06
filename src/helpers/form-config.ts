@@ -94,7 +94,7 @@ export const summaryFormConfig: FieldConfig[] = [
     name: "summary",
     label: "Summary",
     placeholder: "Write a short summary",
-    minLength: 5,
+    minLength: 50,
     maxLength: 300,
     required: true,
   },

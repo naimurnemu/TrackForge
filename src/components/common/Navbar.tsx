@@ -25,7 +25,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/progress", label: "My Progress" },
-    { href: "/summaries", label: "Summaries" },
+    { href: "/summary", label: "Summaries" },
     { href: "/notes", label: "Notes" },
   ];
 

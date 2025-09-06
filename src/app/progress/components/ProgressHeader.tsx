@@ -14,9 +14,11 @@ interface ProgressHeaderProps {
 export default function ProgressHeader({ userId }: ProgressHeaderProps) {
   const router  = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values: { title: string; description: string; target: string }) => {
     setError(null);
+    setLoading(true);
 
     try {
       const data = await createSectionAPI({ ...values, userId });
@@ -33,7 +35,9 @@ export default function ProgressHeader({ userId }: ProgressHeaderProps) {
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
       toast.error(err instanceof Error ? err.message : "An unknown error occurred");
-    } 
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -45,12 +45,9 @@ export function PhaseList({ phases, sectionId }: PhaseListProps) {
             <CardDescription className="mt-2">
               Start building your learning path.
               <br />
-              <Link
-                href={`/progress/${sectionId}/create`}
-                className="text-primary hover:underline font-medium"
-              >
+              <p className="text-primary hover:underline font-medium py-2">
                 Create your first phase
-              </Link>
+              </p>
             </CardDescription>
           </CardHeader>
         </Card>

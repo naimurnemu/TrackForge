@@ -1,8 +1,8 @@
 import { getUserSectionsAPI } from "@/lib/server/sections";
 import { getCurrentUser } from "@/lib/server/auth";
-import { Section } from "@/types/section";
 import SectionList from "./components/SectionList";
 import ProgressHeader from "./components/ProgressHeader";
+import { Section } from "@/types";
 
 
 export default async function ProgressPage() {
