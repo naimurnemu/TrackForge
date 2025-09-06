@@ -65,7 +65,7 @@ export function PhaseList({ phases, sectionId }: PhaseListProps) {
                     <CardTitle>
                       <Link
                         href={`/progress/${sectionId}/${phase.id}`}
-                        className="hover:underline transition-colors"
+                        className="hover:underline transition-colors text-xl"
                       >
                         {phase.title}
                       </Link>

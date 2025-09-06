@@ -50,22 +50,6 @@ export default function HeaderShell({
 }: HeaderShellProps) {
   const [modal, setModal] = useState<null | "create" | "edit" | "delete" | "complete">(null);
 
-  console.log(
-    // shellName,
-    // title,
-    // subtitle,
-    // description,
-    // createdAt,
-    // createConfig,
-    // editConfig,
-    defaultValues,
-    progress,
-    // onCreate,
-    // onEdit,
-    // onComplete,
-    // onDelete,
-  );
-
   return (
     <div className="mb-6 p-4 rounded-lg border bg-card shadow-sm">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 relative">
@@ -186,13 +170,13 @@ export default function HeaderShell({
       )}
 
       {/* Edit */}
-      {modal === "complete" && editConfig && (
+      {modal === "complete" && completeConfig && (
         <ContentModal
           open
           setOpen={() => setModal(null)}
           title="Confirm Complete"
           description="Are you sure you want to complete this item?"
-          fields={completeConfig ?? []}
+          fields={completeConfig}
           onSubmit={onComplete!}
         />
       )}

@@ -3,17 +3,28 @@
 import { Topic } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Clock12 } from "lucide-react";
+import { Clock12, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { ContentModal } from "@/components/modal/ContentModal";
+import { InfoModal } from "@/components/modal/InfoModal";
+import { summaryFormConfig, topicFormConfig } from "@/helpers/form-config";
+import { completeTopicAPI } from "@/lib/server/topics";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Props = {
   topic: Topic;
+  userId: string;
   sectionId: string;
   phaseId: string;
 };
 
-export function TopicItem({ topic, sectionId, phaseId }: Props) {
+export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
+  const [modal, setModal] = useState<null | "edit" | "delete" | "complete">(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const {
     completed,
     title,
@@ -22,11 +33,52 @@ export function TopicItem({ topic, sectionId, phaseId }: Props) {
     id: topicId,
   } = topic;
 
+  const handletopicEdit = (values: {
+    title: string;
+    description: string;
+  }) => {
+    setError(null);
+  };
+
+  const handleTopicComplete = async (values: { timeSpentMinutes: string, summary: string; }) => {
+    setError(null);
+    setLoading(true);
+
+    try {
+      const success = await completeTopicAPI(
+        userId,
+        sectionId,
+        phaseId,
+        topicId,
+        values.summary,
+        Number(values.timeSpentMinutes),
+      );
+
+      if (success) {
+        toast.success(`Topic completed: ${title}`, {
+          description: description,
+          closeButton: true,
+        })
+        router.refresh();
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "An unknown error occurred");
+      toast.error(error instanceof Error ? error.message : "An unknown error occurred");
+    } finally {
+      setLoading(false);
+    }
+
+  };
+
+  const handleTopicDelete = () => {
+    setModal(null);
+  };
+
   return (
     <div
       className={cn(
-        "relative flex flex-col p-5 rounded-lg border shadow-sm transition-all group",
-        "bg-card hover:shadow-md hover:border-primary/40",
+        "relative flex flex-col p-5 rounded-lg border dark:border-gray-500! shadow-sm transition-all group",
+        "bg-card hover:shadow-md hover:border-muted/40",
         completed
           ? "border-green-300 dark:border-green-700"
           : "border-yellow-300 dark:border-yellow-700"
@@ -44,7 +96,12 @@ export function TopicItem({ topic, sectionId, phaseId }: Props) {
 
       {/* Content */}
       <div className="flex-1 pr-2">
-        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        <h3 className="text-xl font-semibold text-foreground flex items-center">
+          {title}
+          {loading && (
+            <Loader2 className="h-4 w-4 mx-1.5 animate-spin text-primary" />
+          )}
+        </h3>
         {description && (
           <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
             {description}
@@ -58,8 +115,8 @@ export function TopicItem({ topic, sectionId, phaseId }: Props) {
             className={cn(
               "px-2 py-0.5 text-sm rounded-full",
               completed
-              ? " bg-green-50 dark:bg-green-400"
-              : " bg-yellow-50 dark:bg-yellow-400"
+                ? " bg-green-50 dark:bg-green-400"
+                : " bg-yellow-50 dark:bg-yellow-400"
             )}
           >
             {completed ? "Completed" : "In Queue"}
@@ -72,17 +129,18 @@ export function TopicItem({ topic, sectionId, phaseId }: Props) {
         </div>
       </div>
 
+      {error && (<div>
+        <p className="text-sm text-destructive">{error}</p>{error}</div>)}
+
       {/* Actions */}
       <div className="flex gap-2 mt-4 justify-end">
         <Button
-          asChild
           size="sm"
           variant="outline"
           className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
+          onClick={() => setModal("edit")}
         >
-          <Link href={`/progress/${sectionId}/${phaseId}/${topicId}/edit`}>
-            Edit
-          </Link>
+          Edit
         </Button>
 
         <Button
@@ -90,18 +148,60 @@ export function TopicItem({ topic, sectionId, phaseId }: Props) {
           variant="destructive"
           className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
           onClick={() => {
-            // TODO: open delete modal
-            console.log("Delete clicked:", topicId);
+            setModal("delete");
           }}
         >
           Delete
         </Button>
-        <Button asChild size="sm" variant={completed ? "secondary" : "default"}>
-          <Link href={`/progress/${sectionId}/${phaseId}/${topicId}/complete`}>
-            {completed ? "Incomplete" : "Complete"}
-          </Link>
+
+        <Button
+          size="sm"
+          onClick={() => setModal("complete")}
+          variant={completed ? "secondary" : "default"}
+        >
+          {completed ? "Incomplete" : "Complete"}
         </Button>
       </div>
+
+      {/* Edit */}
+      {modal === "edit" && (
+        <ContentModal
+          open
+          setOpen={() => setModal(null)}
+          title="Update Topic"
+          description="Update the topic details"
+          fields={topicFormConfig}
+          defaultValues={{
+            title, description,
+          }}
+          onSubmit={(values) => handletopicEdit(values)!}
+        />
+      )}
+
+      {/* Edit */}
+      {modal === "complete" && summaryFormConfig && (
+        <ContentModal
+          open
+          setOpen={() => setModal(null)}
+          title="Confirm Complete"
+          description="Are you sure you want to complete this item?"
+          fields={summaryFormConfig ?? []}
+          onSubmit={(values) => handleTopicComplete(values)!}
+        />
+      )}
+
+      {/* Delete */}
+      {modal === "delete" && (
+        <InfoModal
+          open
+          setOpen={() => setModal(null)}
+          title="Confirm Delete"
+          description={`Are you sure you want to delete ${title} from the list ?`}
+          confirmLabel="Delete"
+          destructive
+          onConfirm={handleTopicDelete}
+        />
+      )}
     </div>
   );
 }

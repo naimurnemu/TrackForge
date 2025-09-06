@@ -22,7 +22,7 @@ export default async function PhasePage({
   return (
     <div className="container mx-auto px-6 py-8 space-y-8">
       <PhaseHeader sectionId={params.sectionId} phase={phase} userId={user.uid} />
-      <TopicList topics={topics} sectionId={params.sectionId} phaseId={params.phaseId} />
+      <TopicList topics={topics} userId={user.uid} sectionId={params.sectionId} phaseId={params.phaseId} />
     </div>
   );
 }

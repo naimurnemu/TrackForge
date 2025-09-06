@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { FieldConfig } from "@/types";
 import { useState } from "react";
 
@@ -16,6 +17,7 @@ interface ContentModalProps {
   setOpen: (v: boolean) => void;
   title: string;
   description?: string;
+  confirmLabel?: string;
   fields: FieldConfig[];
   defaultValues?: Record<string, any>;
   onSubmit: (values: Record<string, any>) => void;
@@ -26,6 +28,7 @@ export function ContentModal({
   setOpen,
   title,
   description,
+  confirmLabel = "Confirm",
   fields,
   defaultValues = {},
   onSubmit,
@@ -122,7 +125,12 @@ export function ContentModal({
 
               case "textarea":
                 return (
-                  <div className="space-y-1" key={field.name}>
+                  <div className={cn(
+                    "relative space-y-1",
+                    error?.length ? "pb-0" : "pb-4"
+                  )}
+                    key={field.name}
+                  >
                     <Label htmlFor={field.name}>
                       {field.label}
                     </Label>
@@ -132,9 +140,9 @@ export function ContentModal({
                       placeholder={field.placeholder}
                       onChange={(event) => handleChange(field.name, event.target.value)}
                       rows={6}
-                      className="w-full resize-none break-words whitespace-pre-wrap" 
+                      className="w-full resize-none break-words whitespace-pre-wrap"
                     />
-                    <div className="flex justify-end text-xs text-muted-foreground">
+                    <div className="flex justify-end text-xs text-muted-foreground absolute bottom-0 right-2">
                       <span>{(value?.length || 0)} {field.maxLength ? `/ ${field.maxLength}` : ""}</span>
                     </div>
                     {error && (
@@ -228,7 +236,7 @@ export function ContentModal({
             Cancel
           </Button>
           <Button onClick={handleSubmit}>
-            Save
+            {confirmLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

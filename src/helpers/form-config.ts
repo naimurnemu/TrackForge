@@ -80,3 +80,23 @@ export const topicFormConfig: FieldConfig[] = [
   },
 ];
 
+export const summaryFormConfig: FieldConfig[] = [
+  {
+    type: "text",
+    name: "timeSpentMinutes",
+    label: "Time Spent",
+    placeholder: "Enter time spent in minutes",
+    pattern: /^[0-9]+$/, 
+    required: true,
+  },
+   {
+    type: "textarea",
+    name: "summary",
+    label: "Summary",
+    placeholder: "Write a short summary",
+    minLength: 5,
+    maxLength: 300,
+    required: true,
+  },
+];
+

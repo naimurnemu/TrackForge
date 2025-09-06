@@ -4,18 +4,19 @@ import Link from "next/link";
 import { TopicItem } from "./TopicItem";
 import { NotepadText } from "lucide-react";
 
-type Props = {
+type TopicListProps = {
   topics: Topic[];
+  userId: string;
   sectionId: string;
   phaseId: string;
 };
 
-export function TopicList({ topics, sectionId, phaseId }: Props) {
+export function TopicList({ topics, userId, sectionId, phaseId }: TopicListProps) {
   const hasTopics = topics.length > 0;
 
   return (
     <div className="mt-8">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Topics</h2>
         <span className="text-sm text-muted-foreground">
           {hasTopics
@@ -23,6 +24,8 @@ export function TopicList({ topics, sectionId, phaseId }: Props) {
             : "Has no Topics yet"}
         </span>
       </div>
+
+      <hr className="my-3" />
 
       {!hasTopics ? (
         <Card className="border-2 border-dashed text-center py-12">
@@ -39,11 +42,12 @@ export function TopicList({ topics, sectionId, phaseId }: Props) {
           </p>
         </Card>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 px-2 w-full lg:w-10/12 mx-auto">
           {topics.map((topic) => (
             <TopicItem
               key={topic.id}
               topic={topic}
+              userId={userId}
               sectionId={sectionId}
               phaseId={phaseId}
             />

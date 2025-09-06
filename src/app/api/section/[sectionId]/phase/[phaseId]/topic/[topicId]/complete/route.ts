@@ -24,10 +24,16 @@ export async function PATCH(req: NextRequest, { params }: ParamsPromiseType) {
   try {
     const { summary, timeSpentMinutes } = await req.json();
 
-    await completeTopic(userId, sectionId, phaseId, topicId, summary, timeSpentMinutes);
+    await completeTopic(
+      userId,
+      sectionId,
+      phaseId,
+      topicId,
+      summary,
+      timeSpentMinutes
+    );
     return successResponse({}, "Topic completed", 200);
   } catch (error) {
     return errorResponse("Failed to complete topic", 500, error);
   }
-  
 }

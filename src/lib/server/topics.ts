@@ -111,6 +111,7 @@ export async function completeTopicAPI(
   summary: string,
   timeSpentMinutes: number
 ) {
+  console.log("completeTopicAPI called", userId, sectionId, phaseId, topicId, summary, timeSpentMinutes);
   try {
     const res = await fetch(
       `${API_URL}/section/${sectionId}/phase/${phaseId}/topic/${topicId}/complete`,
