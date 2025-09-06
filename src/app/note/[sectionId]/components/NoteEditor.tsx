@@ -1,4 +1,3 @@
-// app/note/[sectionId]/components/NoteEditor.tsx
 "use client";
 
 import { useState } from "react";

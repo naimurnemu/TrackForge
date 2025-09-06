@@ -15,8 +15,10 @@ export default async function SummaryBookPage({
 }: {
   params: Promise<{ sectionId: string }>;
 }) {
-  const user = await getCurrentUser();
   const { sectionId } = await params;
+  if (!sectionId) return notFound();
+
+  const user = await getCurrentUser();
   if (!user) return;
 
   const section: SummarySection = await getSummarySectionByIdAPI(user.uid, sectionId);

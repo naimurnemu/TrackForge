@@ -215,7 +215,7 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
           defaultValues={{
             title, description,
           }}
-          onSubmit={(values) => handletopicEdit(values)!}
+          onSubmit={(values) => handletopicEdit(values as { title: string; description: string; })!}
         />
       )}
 
@@ -227,7 +227,9 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
           title="Confirm Complete"
           description="Are you sure you want to complete this item?"
           fields={summaryFormConfig ?? []}
-          onSubmit={(values) => handleTopicComplete(values)!}
+          onSubmit={(values) => {
+            handleTopicComplete(values as { timeSpentMinutes: string, summary: string; });
+          }}
         />
       )}
 

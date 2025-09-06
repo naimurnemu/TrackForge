@@ -7,13 +7,15 @@ import {
 } from "@/components/ui/card";
 import { Topic } from "@/types";
 
+type LessonCardProps = {
+  topic: Topic;
+  index: number;
+};
+
 export default function LessonCard({
   topic,
   index,
-}: {
-  topic: Topic;
-  index: number;
-}) {
+}: LessonCardProps) {
   const { title, description, timeSpentMinutes, summary, completed } = topic;
 
   return (

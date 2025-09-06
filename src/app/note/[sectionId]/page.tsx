@@ -1,4 +1,3 @@
-// app/note/[sectionId]/page.tsx
 import { getCurrentUser } from "@/lib/server/auth";
 import { notFound } from "next/navigation";
 import NoteAccordion from "./components/NoteAccordion";
@@ -8,15 +7,13 @@ export const dynamic = "force-dynamic";
 export default async function SectionNotePage({
   params,
 }: {
-  params: { sectionId: string };
+  params: Promise<{ sectionId: string }>;
 }) {
-  const user = await getCurrentUser();
-  if (!user) return <div className="p-8">Not authenticated</div>;
-
-  // Don’t fetch everything here – let accordion load per-phase
-  const sectionId = params.sectionId;
-
+  const { sectionId } = await params;
   if (!sectionId) return notFound();
+
+  const user = await getCurrentUser();
+  if (!user) return;
 
   return (
     <div className="container mx-auto px-6 py-10 max-w-4xl">
@@ -27,7 +24,7 @@ export default async function SectionNotePage({
         </p>
       </div>
 
-      <NoteAccordion sectionId={sectionId} />
+      <NoteAccordion userId={user.uid} sectionId={sectionId} />
     </div>
   );
 }

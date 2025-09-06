@@ -1,9 +1,8 @@
 "use client";
 
 import HeaderShell from "@/components/common/HeaderShell";
-import { phaseFormConfig, sectionFormConfig, topicFormConfig } from "@/helpers/form-config";
-import { createPhaseAPI, deletePhaseAPI, updatePhaseAPI } from "@/lib/server/phases";
-import { deleteSectionAPI, updateSectionAPI } from "@/lib/server/sections";
+import { phaseFormConfig, topicFormConfig } from "@/helpers/form-config";
+import { deletePhaseAPI, updatePhaseAPI } from "@/lib/server/phases";
 import { createTopicAPI } from "@/lib/server/topics";
 import { Phase, PhaseType } from "@/types";
 import { useRouter } from "next/navigation";
@@ -111,8 +110,8 @@ export default function PhaseHeader({ userId, sectionId, phase }: PhaseHeaderPro
         progress={0}
         loading={loading}
         editConfig={phaseFormConfig}
-        onCreate={(values) => handleCreate(values)}
-        onEdit={(values) => handleEdit(values)}
+        onCreate={(values) => handleCreate(values as { title: string; description: string })}
+        onEdit={(values) => handleEdit(values as { title: string; description: string; type: PhaseType })}
         onDelete={handleDelete}
       />
 

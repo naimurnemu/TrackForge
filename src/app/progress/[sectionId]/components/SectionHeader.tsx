@@ -115,8 +115,8 @@ export default function ProgressHeader({ userId, section }: ProgressHeaderProps)
         defaultValues={section}
         loading={loading}
         editConfig={sectionFormConfig}
-        onCreate={(values) => handleCreate(values)}
-        onEdit={(values) => handleEdit(values)}
+        onCreate={(values) => handleCreate(values as { title: string; description: string; type: PhaseType })}
+        onEdit={(values) => handleEdit(values as { title: string; description: string; target: string })}
         onDelete={handleDelete}
       />
 

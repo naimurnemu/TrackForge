@@ -4,10 +4,9 @@ import SectionList from "./components/SectionList";
 import ProgressHeader from "./components/ProgressHeader";
 import { Section } from "@/types";
 
-
 export default async function ProgressPage() {
   const user = await getCurrentUser();
-  if (!user) return <div className="container p-8">Not authenticated</div>;
+  if (!user) return;
 
   const sections: Section[] = await getUserSectionsAPI(user.uid);
 

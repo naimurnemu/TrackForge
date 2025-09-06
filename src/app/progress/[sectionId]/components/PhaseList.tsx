@@ -52,7 +52,6 @@ export function PhaseList({ phases, sectionId }: PhaseListProps) {
           </CardHeader>
         </Card>
       ) : (
-
         <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
           {sortedPhases.map((phase) => (
             <Card key={phase.id}>

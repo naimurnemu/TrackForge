@@ -1,4 +1,3 @@
-// app/progress/[sectionId]/[phaseId]/page.tsx
 import { notFound } from "next/navigation";
 import { getPhaseByIdAPI } from "@/lib/server/phases";
 import { getTopicsByPhaseIdAPI } from "@/lib/server/topics";
@@ -9,20 +8,28 @@ import PhaseHeader from "./components/PhaseHeader";
 export default async function PhasePage({
   params,
 }: {
-  params: { sectionId: string; phaseId: string };
+  params: Promise<{ sectionId: string; phaseId: string }>;
 }) {
+  const { sectionId, phaseId } = await params;
+  if (!sectionId || !phaseId) return notFound();
+
   const user = await getCurrentUser();
   if (!user) return <div className="container p-8">Not authenticated</div>;
 
-  const phase = await getPhaseByIdAPI(user.uid, params.sectionId, params.phaseId);
+  const phase = await getPhaseByIdAPI(user.uid, sectionId, phaseId);
   if (!phase) return notFound();
 
-  const topics = await getTopicsByPhaseIdAPI(user.uid, params.sectionId, params.phaseId);
+  const topics = await getTopicsByPhaseIdAPI(user.uid, sectionId, phaseId);
 
   return (
     <div className="container mx-auto px-6 py-8 space-y-8">
-      <PhaseHeader sectionId={params.sectionId} phase={phase} userId={user.uid} />
-      <TopicList topics={topics} userId={user.uid} sectionId={params.sectionId} phaseId={params.phaseId} />
+      <PhaseHeader sectionId={sectionId} phase={phase} userId={user.uid} />
+      <TopicList
+        topics={topics}
+        userId={user.uid}
+        sectionId={sectionId}
+        phaseId={phaseId}
+      />
     </div>
   );
 }

@@ -47,7 +47,7 @@ export default function ProgressHeader({ userId }: ProgressHeaderProps) {
         createConfig={sectionFormConfig}
         title="Your Learning Journey"
         subtitle="Stay organized and see how far you’ve come."
-        onCreate={(values) => handleSubmit(values)}
+        onCreate={(values) => handleSubmit(values as { title: string; description: string; target: string })}
       />
 
       {error && <p className="text-red-500">{error}</p>}
