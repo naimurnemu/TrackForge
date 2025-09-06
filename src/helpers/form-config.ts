@@ -1,6 +1,6 @@
 import { FieldConfig } from "@/types";
 
-export const sectionForms: FieldConfig[] = [
+export const sectionFormConfig: FieldConfig[] = [
   {
     type: "text",
     name: "title",
@@ -26,7 +26,7 @@ export const sectionForms: FieldConfig[] = [
     placeholder: "Briefly describe about this objective",
     minLength: 10,
     maxLength: 500,
-    required: false,
+    required: true,
   },
 ];
 
@@ -58,3 +58,25 @@ export const phaseFormConfig: FieldConfig[] = [
     required: true,
   },
 ];
+
+export const topicFormConfig: FieldConfig[] = [
+  {
+    type: "text",
+    name: "title",
+    label: "Title",
+    placeholder: "Enter topic title",
+    minLength: 3,
+    maxLength: 100,
+    required: true,
+  },
+  {
+    type: "textarea",
+    name: "description",
+    label: "Description",
+    placeholder: "Write a short description",
+    minLength: 3,
+    maxLength: 500,
+    required: true,
+  },
+];
+

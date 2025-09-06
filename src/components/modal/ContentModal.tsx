@@ -198,7 +198,7 @@ export function ContentModal({
                     <Label htmlFor={field.name}>
                       {field.label}
                     </Label>
-                    <Select onValueChange={(value) => handleChange(field.name, value)}>
+                    <Select defaultValue={value} onValueChange={(value) => handleChange(field.name, value)}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder={field.placeholder} />
                       </SelectTrigger>

@@ -78,7 +78,7 @@ export async function updatePhaseAPI(
   phaseId: string,
   updates: {
     title?: string;
-    type?: "Learn" | "Practice" | "Project";
+    type?: PhaseType;
     description?: string;
   }
 ) {

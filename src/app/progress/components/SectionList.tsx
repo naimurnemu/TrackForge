@@ -18,6 +18,11 @@ interface SectionListProps {
 }
 
 export default function SectionList({ sections }: SectionListProps) {
+  const sortedSections = [...sections].sort(
+    (a, b) =>
+      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  );
+
   if (sections.length === 0) {
     return (
       <div className="text-center py-16">
@@ -38,7 +43,7 @@ export default function SectionList({ sections }: SectionListProps) {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {sections.map((section) => (
+      {sortedSections.map((section) => (
         <Card key={section.id} className="flex flex-col h-full gap-3">
           <CardHeader>
             <div className="flex items-center gap-2 text-muted-foreground">

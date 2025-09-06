@@ -27,7 +27,7 @@ export default async function SectionPage({
 
   return (
     <div className="container mx-auto px-6 py-8 space-y-8">
-      <SectionHeader shellName="Phase" section={section} userId={userId} />
+      <SectionHeader section={section} userId={userId} />
       <PhaseList phases={phases} sectionId={sectionId} />
     </div>
   );

@@ -1,18 +1,17 @@
 "use client";
 
 import HeaderShell from "@/components/common/HeaderShell";
-import { sectionForms } from "@/helpers/form-config";
+import { sectionFormConfig } from "@/helpers/form-config";
 import { createSectionAPI } from "@/lib/server/sections";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface ProgressHeaderProps {
-  shellName: string;
   userId: string;
 }
 
-export default function ProgressHeader({ userId, shellName }: ProgressHeaderProps) {
+export default function ProgressHeader({ userId }: ProgressHeaderProps) {
   const router  = useRouter();
   const [error, setError] = useState<string | null>(null);
 
@@ -40,8 +39,8 @@ export default function ProgressHeader({ userId, shellName }: ProgressHeaderProp
   return (
     <>
       <HeaderShell
-        shellName={shellName}
-        createConfig={sectionForms}
+        shellName="Section"
+        createConfig={sectionFormConfig}
         title="Your Learning Journey"
         subtitle="Stay organized and see how far you’ve come."
         onCreate={(values) => handleSubmit(values)}

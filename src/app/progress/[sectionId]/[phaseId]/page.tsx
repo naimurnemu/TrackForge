@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/server/auth";
 import { LayoutShell } from "@/components/common/LayoutShell";
 import { TopicList } from "./components/TopicList";
 import { PhaseCard } from "./components/PhaseCard";
+import PhaseHeader from "./components/PhaseHeader";
 
 export default async function PhasePage({
   params,
@@ -20,21 +21,14 @@ export default async function PhasePage({
 
   const topics = await getTopicsByPhaseIdAPI(user.uid, params.sectionId, params.phaseId);
 
-  console.log("topics, phase:", topics, phase);
-
   return (
-    <LayoutShell
-      title={phase.title}
-      subtitle={`Phase • ${phase.type}`}
-      showCreateButton
-      createHref={`/progress/${params.sectionId}/${params.phaseId}/create`}
-      createLabel="New Topic"
-    >
+    <div className="container mx-auto px-6 py-8 space-y-8">
+      <PhaseHeader sectionId={params.sectionId} phase={phase} userId={user.uid} />
       {/* Phase Details */}
-      <PhaseCard phase={phase} sectionId={params.sectionId} />
+      {/* <PhaseCard phase={phase} sectionId={params.sectionId} /> */}
 
       {/* Topics */}
       <TopicList topics={topics} sectionId={params.sectionId} phaseId={params.phaseId} />
-    </LayoutShell>
+    </div>
   );
 }

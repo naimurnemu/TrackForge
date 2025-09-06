@@ -1,48 +1,48 @@
 "use client";
 
 import HeaderShell from "@/components/common/HeaderShell";
-import { phaseFormConfig, sectionFormConfig } from "@/helpers/form-config";
-import { createPhaseAPI } from "@/lib/server/phases";
+import { phaseFormConfig, sectionFormConfig, topicFormConfig } from "@/helpers/form-config";
+import { createPhaseAPI, deletePhaseAPI, updatePhaseAPI } from "@/lib/server/phases";
 import { deleteSectionAPI, updateSectionAPI } from "@/lib/server/sections";
-import { PhaseType, Section } from "@/types";
+import { createTopicAPI } from "@/lib/server/topics";
+import { Phase, PhaseType } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface ProgressHeaderProps {
+interface PhaseHeaderProps {
   userId: string;
-  section: Section
+  sectionId: string;
+  phase: Phase
 }
 
-export default function ProgressHeader({ userId, section }: ProgressHeaderProps) {
+export default function PhaseHeader({ userId, sectionId, phase }: PhaseHeaderProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { title, description, target, createdAt, updatedAt, id: sectionId } = section;
+  const { title, description, type, createdAt, updatedAt, id: phaseId } = phase;
 
-  const handleCreate = async (values: { 
-    title: string; 
-    description: string; 
-    type: PhaseType 
+  const handleCreate = async (values: {
+    title: string;
+    description: string
   }) => {
     setError(null);
     setLoading(true);
 
     try {
-      const data = await createPhaseAPI({
+      const data = await createTopicAPI({
         userId,
         sectionId,
-        ...values
+        phaseId,
+        ...values,
       });
 
-      if (data?.success && data.data?.phaseId) {
+      if (data?.success && data.data?.topicId) {
         toast.success(`Successfully created ${values.title}`, {
           description: values.description,
           closeButton: true,
         })
         router.refresh();
-      } else {
-        setError(data?.message || "Failed to create phase");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -52,16 +52,12 @@ export default function ProgressHeader({ userId, section }: ProgressHeaderProps)
     }
   };
 
-  const handleEdit = async (values: {
-    title: string;
-    description: string;
-    target: string;
-  }) => {
+  const handleEdit = async (values: { title: string; description: string; type: PhaseType }) => {
     setError(null);
     setLoading(true);
-
+    
     try {
-      const success = await updateSectionAPI(userId, sectionId, values);
+      const success = await updatePhaseAPI(userId, sectionId, phaseId, values);
 
       if (success) {
         toast.success(`Successfully updated ${values.title}`, {
@@ -82,16 +78,15 @@ export default function ProgressHeader({ userId, section }: ProgressHeaderProps)
   const handleDelete = async () => {
     setError(null);
     setLoading(true);
-    
     try {
-      const success = await deleteSectionAPI(userId, sectionId);
+      const success = await deletePhaseAPI(userId, sectionId, phaseId);
 
       if (success) {
         toast.success(`Successfully deleted ${title}`, {
           description: description,
           closeButton: true,
         })
-        router.replace("/progress");
+        router.replace(`/progress/${sectionId}`);
         router.refresh();
       }
     } catch (error) {
@@ -105,16 +100,17 @@ export default function ProgressHeader({ userId, section }: ProgressHeaderProps)
   return (
     <>
       <HeaderShell
-        shellName="Phase"
-        createConfig={phaseFormConfig}
+        shellName="Topic"
+        createConfig={topicFormConfig}
         title={title}
-        subtitle={target}
         description={description}
+        phaseType={type}
         createdAt={createdAt}
         updatedAt={updatedAt}
-        defaultValues={section}
+        defaultValues={phase}
+        progress={0}
         loading={loading}
-        editConfig={sectionFormConfig}
+        editConfig={phaseFormConfig}
         onCreate={(values) => handleCreate(values)}
         onEdit={(values) => handleEdit(values)}
         onDelete={handleDelete}

@@ -6,12 +6,16 @@ import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { FieldConfig } from "@/types";
 import { ContentModal } from "../modal/ContentModal";
 import { InfoModal } from "../modal/InfoModal";
+import { Progress } from "../ui/progress";
+import { Badge } from "../ui/badge";
 
 type HeaderShellProps = {
   shellName: string
   title: string;
   subtitle?: string;
   description?: string;
+  phaseType?: string;
+  progress?: number;
   createdAt?: Date | string | number;
   updatedAt?: Date | string | number;
   createConfig?: FieldConfig[];
@@ -19,7 +23,7 @@ type HeaderShellProps = {
   completeConfig?: FieldConfig[];
   defaultValues?: Record<string, any>;
   loading?: boolean;
-  onCreate?: (values: Record<string, any>) => void;
+  onCreate?: (values: Record<string, unknown>) => void;
   onEdit?: (values: Record<string, any>) => void;
   onComplete?: (values: Record<string, any>) => void;
   onDelete?: () => void;
@@ -30,6 +34,8 @@ export default function HeaderShell({
   title,
   subtitle,
   description,
+  progress,
+  phaseType,
   createdAt,
   updatedAt,
   createConfig,
@@ -53,6 +59,7 @@ export default function HeaderShell({
     // createConfig,
     // editConfig,
     defaultValues,
+    progress,
     // onCreate,
     // onEdit,
     // onComplete,
@@ -62,12 +69,18 @@ export default function HeaderShell({
   return (
     <div className="mb-6 p-4 rounded-lg border bg-card shadow-sm">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 relative">
-        <div className="space-y-4">
+        <div className="space-y-4 w-full">
           <div className="space-y-2 border-b pb-4">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground">
+            <Badge
+              variant="secondary"
+              title={`${phaseType} is the phase agenda`}
+            >
+              {phaseType}
+            </Badge>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground flex items-center">
               {title}
               {loading && (
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                <Loader2 className="h-5 w-5 mx-2 animate-spin text-primary" />
               )}
             </h2>
 
@@ -89,6 +102,10 @@ export default function HeaderShell({
                 {subtitle}
               </h5>
             )}
+
+            {typeof progress === "number" ? (<div className="w-full md:w-2/3 bg-muted rounded-full my-3">
+              <Progress className="h-3" value={progress} />
+            </div>) : null}
 
             {description && (
               <p className="text-sm leading-relaxed text-muted-foreground max-w-prose">
@@ -122,7 +139,7 @@ export default function HeaderShell({
           )}
         </div>
 
-        <div className="absolute bottom-2 right-4"> 
+        <div className="absolute bottom-2 right-4">
           {updatedAt && (
             <p className="text-sm text-muted-foreground">
               Updated on{" "}
@@ -165,15 +182,14 @@ export default function HeaderShell({
         />
       )}
 
-      {/* Complete */}
-      {modal === "complete" && (
+      {/* Edit */}
+      {modal === "complete" && editConfig && (
         <ContentModal
           open
           setOpen={() => setModal(null)}
           title="Confirm Complete"
           description="Are you sure you want to complete this item?"
-          // confirmLabel="Complete"
-          fields={completeConfig}
+          fields={completeConfig ?? []}
           onSubmit={onComplete!}
         />
       )}
