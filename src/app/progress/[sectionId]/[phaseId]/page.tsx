@@ -3,9 +3,7 @@ import { notFound } from "next/navigation";
 import { getPhaseByIdAPI } from "@/lib/server/phases";
 import { getTopicsByPhaseIdAPI } from "@/lib/server/topics";
 import { getCurrentUser } from "@/lib/server/auth";
-import { LayoutShell } from "@/components/common/LayoutShell";
 import { TopicList } from "./components/TopicList";
-import { PhaseCard } from "./components/PhaseCard";
 import PhaseHeader from "./components/PhaseHeader";
 
 export default async function PhasePage({
@@ -24,10 +22,6 @@ export default async function PhasePage({
   return (
     <div className="container mx-auto px-6 py-8 space-y-8">
       <PhaseHeader sectionId={params.sectionId} phase={phase} userId={user.uid} />
-      {/* Phase Details */}
-      {/* <PhaseCard phase={phase} sectionId={params.sectionId} /> */}
-
-      {/* Topics */}
       <TopicList topics={topics} sectionId={params.sectionId} phaseId={params.phaseId} />
     </div>
   );

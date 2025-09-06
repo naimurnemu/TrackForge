@@ -55,7 +55,7 @@ export const phaseFormConfig: FieldConfig[] = [
     placeholder: "Write a short description",
     minLength: 3,
     maxLength: 500,
-    required: true,
+    required: false,
   },
 ];
 
@@ -72,8 +72,8 @@ export const topicFormConfig: FieldConfig[] = [
   {
     type: "textarea",
     name: "description",
-    label: "Description",
-    placeholder: "Write a short description",
+    label: "Details",
+    placeholder: "Write a short details",
     minLength: 3,
     maxLength: 500,
     required: true,

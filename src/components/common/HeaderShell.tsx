@@ -103,9 +103,12 @@ export default function HeaderShell({
               </h5>
             )}
 
-            {typeof progress === "number" ? (<div className="w-full md:w-2/3 bg-muted rounded-full my-3">
-              <Progress className="h-3" value={progress} />
-            </div>) : null}
+            {typeof progress === "number" ? (
+              <div className="w-full md:w-2/3 rounded-full my-3">
+                <p className=" text-accent-foreground">Completed: {progress}% </p>
+                <Progress className="h-3" value={progress} />
+              </div>
+            ) : null}
 
             {description && (
               <p className="text-sm leading-relaxed text-muted-foreground max-w-prose">
