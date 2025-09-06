@@ -4,9 +4,7 @@ import { getSectionByIdAPI } from "@/lib/server/sections";
 import { getCurrentUser } from "@/lib/server/auth";
 import { getPhasesBySectionIdAPI } from "@/lib/server/phases";
 import { PhaseList } from "./components/PhaseList";
-import { Button } from "@/components/ui/button";
 import SectionHeader from "./components/SectionHeader";
-import Link from "next/link";
 
 
 export default async function SectionPage({

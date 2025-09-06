@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedPaths = ["/dashboard", "/progress", "/summaries", "/notes"];
+const protectedPaths = ["/dashboard", "/progress", "/summary", "/note"];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  console.log("middleware", pathname);
   const session = req.cookies.get("session")?.value;
 
-  console.log(pathname, session, session ? "has session" : "no session");
-
-  if (pathname === "/" && session) {
+  if (session && pathname === "/") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  if (!session && protectedPaths.some(path => pathname.startsWith(path))) {
+  if (!session && protectedPaths.some((path) => pathname.startsWith(path))) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -24,7 +23,7 @@ export const config = {
     "/",
     "/dashboard/:path*",
     "/progress/:path*",
-    "/summaries/:path*",
-    "/notes/:path*",
+    "/summary/:path*",
+    "/note/:path*",
   ],
 };

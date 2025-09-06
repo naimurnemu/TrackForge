@@ -11,9 +11,7 @@ export const dynamic = "force-dynamic";
 
 export default async function SummariesPage() {
   const user = await getCurrentUser();
-  if (!user) {
-    return <div className="container p-8">Not authenticated</div>;
-  }
+  if (!user) return;
 
   const sections: Section[] = await getUserSectionsAPI(user.uid);
 

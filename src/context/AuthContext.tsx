@@ -27,11 +27,12 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setLoading(true);
       (async () => {
         if (firebaseUser) {
           const { uid, email, displayName, photoURL, metadata } = firebaseUser;
@@ -58,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async () => {
+    setLoading(true);
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
@@ -74,14 +76,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error("Failed to create session");
     }
 
-    router.push("/");
+    setLoading(false);
+
+    router.replace("/dashboard");
   };
 
   const logout = async () => {
-    await firebaseSignOut(auth);
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/");
-  };
+  await firebaseSignOut(auth);
+  await fetch("/api/auth/logout", { method: "POST" });
+  setUser(null);
+  window.location.href = "/";
+};
 
   const value = {
     user,

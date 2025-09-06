@@ -13,11 +13,11 @@ export const dynamic = "force-dynamic";
 export default async function SummaryBookPage({
   params,
 }: {
-  params: { sectionId: string };
+  params: Promise<{ sectionId: string }>;
 }) {
   const user = await getCurrentUser();
-  const { sectionId } = params;
-  if (!user) return <div className="p-8">Not authenticated</div>;
+  const { sectionId } = await params;
+  if (!user) return;
 
   const section: SummarySection = await getSummarySectionByIdAPI(user.uid, sectionId);
   if (!section) return notFound();
