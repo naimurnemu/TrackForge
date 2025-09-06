@@ -76,9 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error("Failed to create session");
     }
 
+    window.location.href = "/dashboard";
     setLoading(false);
-
-    router.replace("/dashboard");
   };
 
   const logout = async () => {
