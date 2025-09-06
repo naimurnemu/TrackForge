@@ -89,7 +89,7 @@ export async function updateTopicAPI(
     const res = await fetch(
       `${API_URL}/section/${sectionId}/phase/${phaseId}/topic/${topicId}?userId=${userId}`,
       {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updates),
       }

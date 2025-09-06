@@ -1,6 +1,5 @@
 import { Topic } from "@/types";
 import { Card } from "@/components/ui/card";
-import Link from "next/link";
 import { TopicItem } from "./TopicItem";
 import { NotepadText } from "lucide-react";
 
@@ -13,6 +12,11 @@ type TopicListProps = {
 
 export function TopicList({ topics, userId, sectionId, phaseId }: TopicListProps) {
   const hasTopics = topics.length > 0;
+
+  const sortedTopics = [...topics].sort(
+    (a, b) =>
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
 
   return (
     <div className="mt-8">
@@ -28,22 +32,20 @@ export function TopicList({ topics, userId, sectionId, phaseId }: TopicListProps
       <hr className="my-3" />
 
       {!hasTopics ? (
-        <Card className="border-2 border-dashed text-center py-12">
+        <Card className="border-2 border-dashed text-center gap-2 py-12">
+          <div className="mx-auto">
+
           <NotepadText />
+          </div>
           <p className="text-muted-foreground">No topics created yet.</p>
           <p className="text-sm mt-2">
-            <Link
-              href={`/progress/${sectionId}/${phaseId}/create`}
-              className="text-primary hover:underline font-medium"
-            >
-              Create your first topic
-            </Link>{" "}
+            Create your first topic
             to get started.
           </p>
         </Card>
       ) : (
         <div className="space-y-3 px-2 w-full lg:w-10/12 mx-auto">
-          {topics.map((topic) => (
+          {sortedTopics.map((topic) => (
             <TopicItem
               key={topic.id}
               topic={topic}

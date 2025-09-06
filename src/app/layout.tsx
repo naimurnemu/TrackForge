@@ -27,7 +27,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // console.log("Rendering RootLayout", children);
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -42,7 +41,7 @@ export default function RootLayout({
           <AuthProvider>
             <Navbar />
             {children}
-            <Toaster position="top-center" richColors closeButton />
+            <Toaster position="top-center" richColors duration={2000} />
           </AuthProvider>
         </ThemeProvider>
       </body>

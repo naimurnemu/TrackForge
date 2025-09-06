@@ -169,7 +169,7 @@ export default function HeaderShell({
         />
       )}
 
-      {/* Edit */}
+      {/* Complete */}
       {modal === "complete" && completeConfig && (
         <ContentModal
           open

@@ -11,18 +11,16 @@ interface ParamsPromiseType {
 }
 
 export async function PATCH(req: NextRequest, { params }: ParamsPromiseType) {
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
   const { sectionId, phaseId, topicId } = await params;
 
-  if (!userId || !sectionId || !phaseId || !topicId)
+  if (!sectionId || !phaseId || !topicId)
     return errorResponse(
-      "Missing userId or sectionId or phaseId or topicId",
+      "Missing sectionId or phaseId or topicId",
       400
     );
 
   try {
-    const { summary, timeSpentMinutes } = await req.json();
+    const { summary, timeSpentMinutes, userId } = await req.json();
 
     await completeTopic(
       userId,

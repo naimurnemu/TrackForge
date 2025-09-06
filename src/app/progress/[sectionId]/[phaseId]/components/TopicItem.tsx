@@ -9,7 +9,7 @@ import { useState } from "react";
 import { ContentModal } from "@/components/modal/ContentModal";
 import { InfoModal } from "@/components/modal/InfoModal";
 import { summaryFormConfig, topicFormConfig } from "@/helpers/form-config";
-import { completeTopicAPI } from "@/lib/server/topics";
+import { completeTopicAPI, deleteTopicAPI, updateTopicAPI } from "@/lib/server/topics";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -33,11 +33,35 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
     id: topicId,
   } = topic;
 
-  const handletopicEdit = (values: {
+  const handletopicEdit = async (values: {
     title: string;
     description: string;
   }) => {
     setError(null);
+    setLoading(true);
+
+    try {
+      const success = await updateTopicAPI(
+        userId,
+        sectionId,
+        phaseId,
+        topicId,
+        values
+      );
+
+      if (success) {
+        toast.success(`Successfully updated ${title}`, {
+          description: description,
+          closeButton: true,
+        })
+        router.refresh();
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "An unknown error occurred");
+      toast.error(error instanceof Error ? error.message : "An unknown error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleTopicComplete = async (values: { timeSpentMinutes: string, summary: string; }) => {
@@ -70,8 +94,27 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
 
   };
 
-  const handleTopicDelete = () => {
-    setModal(null);
+  const handleTopicDelete = async () => {
+    setError(null);
+    setLoading(true);
+
+    try {
+      const success = await deleteTopicAPI(userId, sectionId, phaseId, topicId);
+
+      if (success) {
+        toast.success(`Successfully deleted ${title}`, {
+          description: description,
+          closeButton: true,
+        })
+      }
+
+      router.refresh();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "An unknown error occurred");
+      toast.error(error instanceof Error ? error.message : "An unknown error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -84,7 +127,6 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
           : "border-yellow-300 dark:border-yellow-700"
       )}
     >
-      {/* Left accent bar */}
       <div
         className={cn(
           "absolute top-0 left-0 w-1 h-full rounded-l-lg",
@@ -94,7 +136,6 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
         )}
       />
 
-      {/* Content */}
       <div className="flex-1 pr-2">
         <h3 className="text-xl font-semibold text-foreground flex items-center">
           {title}
@@ -102,14 +143,15 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
             <Loader2 className="h-4 w-4 mx-1.5 animate-spin text-primary" />
           )}
         </h3>
-        {description && (
-          <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
-            {description}
-          </p>
-        )}
+        <div className="flex gap-3 mt-3 flex-wrap">
+          {timeSpentMinutes && (
 
-        {/* Meta info */}
-        <div className="flex items-center gap-3 mt-3 flex-wrap">
+            <span className="flex items-center gap-1 px-2 py-0.5 text-sm rounded-full bg-muted text-muted-foreground w-fit">
+              <Clock12 className="w-4 h-4 mr-1" />
+              {timeSpentMinutes} {timeSpentMinutes > 1 ? "Minutes" : "Minute"}
+            </span>
+
+          )}
           <Badge
             variant={completed ? "default" : "outline"}
             className={cn(
@@ -121,18 +163,17 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
           >
             {completed ? "Completed" : "In Queue"}
           </Badge>
-          {timeSpentMinutes && (
-            <span className="px-2 py-0.5 text-xs rounded-full bg-muted text-muted-foreground">
-              <Clock12 className="w-4 h-4 mr-1" /> {timeSpentMinutes} min
-            </span>
-          )}
         </div>
+        {description && (
+          <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
+            {description}
+          </p>
+        )}
       </div>
 
       {error && (<div>
         <p className="text-sm text-destructive">{error}</p>{error}</div>)}
 
-      {/* Actions */}
       <div className="flex gap-2 mt-4 justify-end">
         <Button
           size="sm"
@@ -178,7 +219,7 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
         />
       )}
 
-      {/* Edit */}
+      {/* Complete */}
       {modal === "complete" && summaryFormConfig && (
         <ContentModal
           open
