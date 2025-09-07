@@ -8,10 +8,7 @@ interface ParamsPromiseType {
   }>;
 }
 
-export async function GET(
-  req: NextRequest,
-  { params }: ParamsPromiseType
-) {
+export async function GET(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const { sectionId } = await params;

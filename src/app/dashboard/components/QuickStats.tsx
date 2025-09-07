@@ -1,7 +1,26 @@
 import { Card } from "@/components/ui/card";
+import { getDailyProgress } from "@/lib/server/progress";
+import { Progress } from "@/types";
 import { Clock, BookOpen, CheckCircle } from "lucide-react";
 
-export default function QuickStats() {
+interface QuickStatsProps { 
+  userId: string;
+}
+
+export default async function QuickStats({ userId }: QuickStatsProps) {
+
+  let progress: Progress = await getDailyProgress(userId, new Date().toISOString().split("T")[0]);
+
+  console.log(progress);
+
+  if (!progress) 
+    progress = {
+      date: new Date().toISOString().split("T")[0],
+      totalItemSpent: 0,
+      totalCompletedTopic: 0,
+      interactedPhases: []
+    }
+
   return (
     <div className="space-y-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-4 items-stretch">
       <StatItem icon={<Clock className="h-5 w-5 text-blue-500" />} label="Today" value="1h 24m" />

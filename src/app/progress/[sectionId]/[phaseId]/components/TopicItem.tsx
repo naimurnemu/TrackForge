@@ -138,7 +138,9 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
 
       <div className="flex-1 pr-2">
         <h3 className="text-xl font-semibold text-foreground flex items-center">
-          {title}
+          <span className={cn("truncate", completed && "line-through")}>
+            {title}
+          </span>
           {loading && (
             <Loader2 className="h-4 w-4 mx-1.5 animate-spin text-primary" />
           )}
@@ -153,6 +155,7 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
 
           )}
           <Badge
+            hidden={completed}
             variant={completed ? "default" : "outline"}
             className={cn(
               "px-2 py-0.5 text-sm rounded-full",
@@ -198,9 +201,10 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
         <Button
           size="sm"
           onClick={() => setModal("complete")}
-          variant={completed ? "secondary" : "default"}
+          disabled={completed}
+          className={cn("", completed && "bg-green-700   dark:bg-green-400 rounded-full")}
         >
-          {completed ? "Incomplete" : "Complete"}
+          {completed ? "Completed" : "Complete"}
         </Button>
       </div>
 
@@ -224,7 +228,7 @@ export function TopicItem({ topic, userId, sectionId, phaseId }: Props) {
         <ContentModal
           open
           setOpen={() => setModal(null)}
-          title="Confirm Complete"
+          title={`Confirm Complete '${title}'`}
           description="Are you sure you want to complete this item?"
           fields={summaryFormConfig ?? []}
           onSubmit={(values) => {

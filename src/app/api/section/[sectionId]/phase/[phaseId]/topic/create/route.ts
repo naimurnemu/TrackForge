@@ -9,10 +9,7 @@ interface ParamsPromiseType {
   }>;
 }
 
-export async function POST(
-  req: NextRequest,
-  { params }: ParamsPromiseType
-) {
+export async function POST(req: NextRequest, { params }: ParamsPromiseType) {
   const { sectionId, phaseId } = await params;
 
   try {

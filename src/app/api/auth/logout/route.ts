@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { successResponse } from "@/lib/api/response";
 
 export async function POST() {
-  const response = NextResponse.json({ status: "success" });
+  const response = successResponse({ status: "success" }, "Successfully logged out", 200);
 
   response.cookies.set("session", "", {
     httpOnly: true,
@@ -13,5 +13,3 @@ export async function POST() {
 
   return response;
 }
-
-

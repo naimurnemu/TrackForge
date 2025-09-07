@@ -14,7 +14,7 @@ export default async function PhasePage({
   if (!sectionId || !phaseId) return notFound();
 
   const user = await getCurrentUser();
-  if (!user) return <div className="container p-8">Not authenticated</div>;
+  if (!user) return;
 
   const phase = await getPhaseByIdAPI(user.uid, sectionId, phaseId);
   if (!phase) return notFound();

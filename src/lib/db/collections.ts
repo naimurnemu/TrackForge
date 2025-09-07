@@ -28,6 +28,12 @@ export const getPhaseTopicDoc = (
   topicId: string
 ) => getPhaseTopicCollection(userId, sectionId, phaseId).doc(topicId);
 
+export const getUserProgressCollection = (userId: string) =>
+  adminDB.collection("users").doc(userId).collection("progress");
+
+export const getUserProgressDoc = (userId: string, day: string) =>
+  getUserProgressCollection(userId).doc(day);
+
 export const getTopicNoteCollection = (topicId: string) =>
   adminDB.collection("topics").doc(topicId).collection("notes");
 

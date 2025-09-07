@@ -1,13 +1,12 @@
+import { errorResponse, successResponse } from "@/lib/api/response";
 import { adminAuth } from "@/lib/firebase-admin";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
     const { idToken, expiresIn = 60 * 60 * 24 * 7 } = await req.json();
 
-    if (!idToken) {
-      return NextResponse.json({ error: "Missing idToken" }, { status: 400 });
-    }
+    if (!idToken) return errorResponse("Missing idToken", 400);
 
     const decode = await adminAuth.verifyIdToken(idToken);
 
@@ -15,11 +14,11 @@ export async function POST(req: NextRequest) {
       expiresIn: expiresIn * 1000,
     });
 
-    const response = NextResponse.json({
-      status: "success",
-      user: decode,
-      token: sessionCookie,
-    });
+    const response = successResponse(
+      { status: "success", user: decode, token: sessionCookie },
+      "Success",
+      200
+    );
 
     response.cookies.set("session", sessionCookie, {
       httpOnly: true,
@@ -31,6 +30,6 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error) {
-    return NextResponse.json({ message: "Auth failed", error }, { status: 500 }, );
+    return errorResponse("Auth failed", 500, error);
   }
 }

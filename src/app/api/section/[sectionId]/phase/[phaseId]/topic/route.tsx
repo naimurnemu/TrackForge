@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params }: ParamsPromiseType) {
     const topic = await getTopicsByPhase(userId, sectionId, phaseId);
     if (!topic) return errorResponse("Topic not found", 404);
     return successResponse({ topic }, "Topic fetched", 200);
-  }catch (error) {
+  } catch (error) {
     return errorResponse("Failed to fetch topic", 500, error);
   }
 }

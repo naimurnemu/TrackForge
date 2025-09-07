@@ -2,10 +2,14 @@ import { Button } from "@/components/ui/button";
 import HeroQuote from "./components/HeroQuote";
 import ProgressGraph from "./components/ProgressGraph";
 import QuickStats from "./components/QuickStats";
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getCurrentUser } from "@/lib/server/auth";
 import Link from "next/link";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const user = await getCurrentUser();
+  if (!user) return;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <section className="mb-10">
@@ -38,7 +42,7 @@ export default function DashboardPage() {
               <CardDescription>Your learning journey at a glance</CardDescription>
             </CardHeader>
             <CardContent>
-              <ProgressGraph />
+              <ProgressGraph userId={user.uid} />
             </CardContent>
           </Card>
         </div>
@@ -50,7 +54,7 @@ export default function DashboardPage() {
               <CardDescription>Today’s achievements</CardDescription>
             </CardHeader>
             <CardContent>
-              <QuickStats />
+              <QuickStats userId={user.uid} />
             </CardContent>
           </Card>
         </div>
