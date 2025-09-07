@@ -1,6 +1,7 @@
-import { Phase } from "@/types";
+import { Phase, Topic } from "@/types";
 import { getSectionPhaseCollection, getSectionPhaseDoc } from "./collections";
 import { deleteDocumentWithSubcollections } from './utils';
+import { getTopicsByPhase } from "./topics";
 
 export async function CreatePhase(
   userId: string,
@@ -27,6 +28,21 @@ export async function getPhasesBySection(userId: string, sectionId: string) {
     createdAt: doc.data().createdAt?.toDate?.() || null,
     updatedAt: doc.data().updatedAt?.toDate?.() || null,
   })) as Phase[];
+}
+
+export async function getPhaseProgress(
+  userId: string,
+  sectionId: string,
+  phaseId: string
+): Promise<number> {
+  const topics: Topic[] = await getTopicsByPhase(userId, sectionId, phaseId);
+
+  const total = topics.length;
+  if (total === 0) return 0;
+
+  const completed = topics.filter((topic) => topic.completed).length;
+
+  return Math.round((completed / total) * 100);
 }
 
 export async function getPhaseById(

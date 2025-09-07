@@ -1,5 +1,10 @@
 import { errorResponse, successResponse } from "@/lib/api/response";
-import { deletePhase, getPhaseById, updatePhase } from "@/lib/db/phases";
+import {
+  deletePhase,
+  getPhaseById,
+  getPhaseProgress,
+  updatePhase,
+} from "@/lib/db/phases";
 import { Phase } from "@/types";
 import { NextRequest } from "next/server";
 
@@ -10,10 +15,7 @@ interface ParamsPromiseType {
   }>;
 }
 
-export async function GET(
-  req: NextRequest,
-  { params }: ParamsPromiseType
-) {
+export async function GET(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const { sectionId, phaseId } = await params;
@@ -23,6 +25,10 @@ export async function GET(
 
   try {
     const phase = await getPhaseById(userId, sectionId, phaseId);
+    if (phase?.id) {
+      const progress = await getPhaseProgress(userId, sectionId, phaseId);
+      phase.progress = progress;
+    }
     if (!phase) return errorResponse("Phase not found", 404);
     return successResponse({ phase }, "Phase fetched", 200);
   } catch (error) {
@@ -30,9 +36,7 @@ export async function GET(
   }
 }
 
-export async function PATCH(req: NextRequest,
-  { params }: ParamsPromiseType
-) {
+export async function PATCH(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const { sectionId, phaseId } = await params;
@@ -59,10 +63,7 @@ export async function PATCH(req: NextRequest,
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
- { params }: ParamsPromiseType
-) {
+export async function DELETE(req: NextRequest, { params }: ParamsPromiseType) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
   const { sectionId, phaseId } = await params;

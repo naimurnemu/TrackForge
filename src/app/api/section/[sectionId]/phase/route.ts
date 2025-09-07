@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { errorResponse, successResponse } from "@/lib/api/response";
-import { getPhasesBySection } from "@/lib/db/phases";
+import { getPhaseProgress, getPhasesBySection } from "@/lib/db/phases";
 
 interface ParamsPromiseType {
   params: Promise<{
@@ -16,7 +16,20 @@ export async function GET(req: NextRequest, { params }: ParamsPromiseType) {
     return errorResponse("Missing userId or sectionId", 400);
 
   try {
-    const phases = await getPhasesBySection(userId, sectionId);
+    let phases = await getPhasesBySection(userId, sectionId);
+
+    if (phases.length > 0) {
+      phases = await Promise.all(
+        phases.map(async (phase) => {
+          const progress = await getPhaseProgress(userId, sectionId, phase.id);
+          return {
+            ...phase,
+            progress,
+          };
+        })
+      );
+    }
+
     return successResponse({ phases }, "Phases fetched", 200);
   } catch (error) {
     return errorResponse("Failed to fetch phases", 500, error);

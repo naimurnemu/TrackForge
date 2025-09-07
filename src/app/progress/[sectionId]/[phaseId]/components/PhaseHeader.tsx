@@ -19,7 +19,7 @@ export default function PhaseHeader({ userId, sectionId, phase }: PhaseHeaderPro
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { title, description, type, createdAt, updatedAt, id: phaseId } = phase;
+  const { title, description, type, createdAt, updatedAt, progress, id: phaseId } = phase;
 
   const handleCreate = async (values: {
     title: string;
@@ -107,7 +107,7 @@ export default function PhaseHeader({ userId, sectionId, phase }: PhaseHeaderPro
         createdAt={createdAt}
         updatedAt={updatedAt}
         defaultValues={phase}
-        progress={0}
+        progress={progress}
         loading={loading}
         editConfig={phaseFormConfig}
         onCreate={(values) => handleCreate(values as { title: string; description: string })}
