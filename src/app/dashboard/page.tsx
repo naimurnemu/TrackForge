@@ -1,12 +1,13 @@
+import { Button } from "@/components/ui/button";
 import HeroQuote from "./components/HeroQuote";
 import ProgressGraph from "./components/ProgressGraph";
 import QuickStats from "./components/QuickStats";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function DashboardPage() {
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Hero Section */}
       <section className="mb-10">
         <Card className="bg-primary/5">
           <CardHeader>
@@ -15,16 +16,22 @@ export default function DashboardPage() {
               Keep moving forward, one step at a time.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <HeroQuote />
-          </CardContent>
+          <div className="flex flex-col lg:flex-row justify-between items-end gap-4">
+            <CardContent>
+              <HeroQuote />
+            </CardContent>
+            <div className="w-full lg:max-w-48 text-end px-6 self-end">
+              <Button asChild>
+                <Link href="/progress">Open Progress</Link>
+              </Button>
+            </div>
+          </div>
+
         </Card>
       </section>
 
-      {/* Stats & Graph Grid */}
-      <div className="grid gap-6 md:grid-cols-3 justify-between items-stretch">
-        {/* Graph */}
-        <div className="md:col-span-2">
+      <div className="grid gap-6 grid-cols-3 justify-between items-stretch w-full">
+        <div className="col-span-3 lg:col-span-2 w-full">
           <Card>
             <CardHeader>
               <CardTitle>Progress Overview</CardTitle>
@@ -36,8 +43,7 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Quick Stats */}
-        <div>
+        <div className="col-span-3 lg:col-span-1 w-full ">
           <Card>
             <CardHeader>
               <CardTitle>Quick Stats</CardTitle>
