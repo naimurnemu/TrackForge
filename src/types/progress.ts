@@ -1,6 +1,6 @@
 export interface Progress {
   date: string;
-  totalItemSpent?: number;
+  totalTimeSpent?: number;
   totalCompletedTopic?: number;
   interactedPhases?: string[];
 }

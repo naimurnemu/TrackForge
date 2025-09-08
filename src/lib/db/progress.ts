@@ -2,6 +2,7 @@ import { getUserProgressCollection, getUserProgressDoc } from "./collections";
 import { FieldValue } from "firebase-admin/firestore";
 
 export async function getDailyProgress(userId: string, day: string) {
+  if (!userId || !day) return null;
   const doc = await getUserProgressDoc(userId, day).get();
   return doc.exists ? { id: doc.id, ...doc.data() } : null;
 }

@@ -5,9 +5,10 @@ import { NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
-  const day = searchParams.get("day");
 
-  if (!userId || !day) return errorResponse("Missing userId", 400);
+  if (!userId) return errorResponse("Missing userId", 400);
+
+  const day = new Date().toISOString().split("T")[0];
 
   try {
     const progress = await getDailyProgress(userId, day);
